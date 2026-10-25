@@ -1,6 +1,6 @@
 /* ऑफ़लाइन के लिए ऐप की फ़ाइलें सहेजना (offline cache). नया संस्करण डालें तो VERSION बदलें। */
-const VERSION = "sb-v2";
-const SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "manifest.json", "privacy.html",
+const VERSION = "sb-v3";
+const SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "quiz.js", "manifest.json", "privacy.html",
   "icons/icon-192.png", "icons/icon-512.png",
   "fonts/mukta-devanagari-400-normal.woff2", "fonts/mukta-devanagari-700-normal.woff2",
   "fonts/mukta-latin-400-normal.woff2", "fonts/mukta-latin-700-normal.woff2"];

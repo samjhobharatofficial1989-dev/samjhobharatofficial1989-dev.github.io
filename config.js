@@ -10,6 +10,12 @@ window.SB_CONFIG = {
   // "जानकारी" टैब में वे पोस्ट दिखेंगी जिन पर ब्लॉग में यह Label लगा होगा
   gyanLabel: "जानकारी",
 
+  // शेयर करते समय भेजा जाने वाला ऐप का लिंक (Play Store पर आने के बाद Play Store लिंक डालें)
+  appShareUrl: "https://samjhobharatofficial1989-dev.github.io/",
+
+  // रोज़ के क्विज़ में कितने सवाल
+  quizPerDay: 5,
+
   // एक बार में कितनी खबरें दिखें
   maxPosts: 20,
 

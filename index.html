@@ -26,7 +26,12 @@
 <main id="main">
   <!-- खबरें -->
   <section id="tab-news" class="tab active" aria-label="खबरें">
-    <div class="section-head"><h2>ताज़ा खबरें</h2><span id="newsStatus" class="status"></span></div>
+    <form id="searchForm" class="search" role="search">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16a6.47 6.47 0 0 0 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input id="searchInput" type="search" placeholder="खबर खोजें… (Search news)" enterkeyhint="search" autocomplete="off">
+    </form>
+    <div id="chips" class="chips"></div>
+    <div class="section-head"><h2 id="newsHeading">ताज़ा खबरें</h2><span id="newsStatus" class="status"></span></div>
     <div id="newsList" class="list"></div>
   </section>
 
@@ -36,6 +41,12 @@
     <div id="gyanList" class="list"></div>
     <h3 class="sub">क्या आप जानते हैं?</h3>
     <div id="factList" class="facts"></div>
+  </section>
+
+  <!-- क्विज़ -->
+  <section id="tab-quiz" class="tab" aria-label="आज का क्विज़">
+    <div class="section-head"><h2>आज का क्विज़</h2><span id="quizStreak" class="status"></span></div>
+    <div id="quizBox" class="quiz"></div>
   </section>
 
   <!-- वीडियो -->
@@ -82,6 +93,7 @@
 <nav class="bottomnav" aria-label="मुख्य मेनू">
   <button data-tab="news" class="active"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h13v16H5a1 1 0 0 1-1-1V4zm15 4h1v11a2 2 0 0 1-2 2V8zM7 7v3h7V7H7zm0 5v1.5h7V12H7zm0 3.5V17h7v-1.5H7z"/></svg><span>खबरें</span></button>
   <button data-tab="gyan"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>जानकारी</span></button>
+  <button data-tab="quiz"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 17h-2v-2h2v2zm2.07-7.75-.9.92A3.4 3.4 0 0 0 13 15h-2v-.5a4 4 0 0 1 1.17-2.83l1.24-1.26A1.96 1.96 0 0 0 14 9a2 2 0 0 0-4 0H8a4 4 0 0 1 8 0 3.2 3.2 0 0 1-.93 2.25z"/></svg><span>क्विज़</span></button>
   <button data-tab="video"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M21 6.5a2.5 2.5 0 0 0-1.76-1.77C17.68 4.3 12 4.3 12 4.3s-5.68 0-7.24.43A2.5 2.5 0 0 0 3 6.5 26 26 0 0 0 2.6 12 26 26 0 0 0 3 17.5a2.5 2.5 0 0 0 1.76 1.77c1.56.43 7.24.43 7.24.43s5.68 0 7.24-.43A2.5 2.5 0 0 0 21 17.5a26 26 0 0 0 .4-5.5 26 26 0 0 0-.4-5.5zM10 15.2V8.8l5.2 3.2-5.2 3.2z"/></svg><span>वीडियो</span></button>
   <button data-tab="links"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05A4.22 4.22 0 0 1 17 16.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span>जुड़ें</span></button>
 </nav>
@@ -89,6 +101,7 @@
 <footer class="slogan">देश को समझिए, समझो भारत के साथ।</footer>
 
 <script src="config.js"></script>
+<script src="quiz.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

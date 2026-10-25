@@ -16,15 +16,17 @@
     navBtns.forEach(function (b) { b.classList.toggle("active", b.dataset.tab === name); });
     document.querySelectorAll(".tab").forEach(function (s) { s.classList.toggle("active", s.id === "tab-" + name); });
     if (name === "video") loadVideos();
+    if (name === "quiz") Quiz.start();
     window.scrollTo(0, 0);
     store.set("sb_tab", name);
   }
   navBtns.forEach(function (b) { b.addEventListener("click", function () { showTab(b.dataset.tab); }); });
 
   /* ---------- ब्लॉग से पोस्ट लाना (Blogger JSON feed) ---------- */
-  function feedUrl(label, cb) {
+  function feedUrl(label, cb, q) {
     var path = "/feeds/posts/default" + (label ? "/-/" + encodeURIComponent(label) : "");
-    return C.blogUrl.replace(/\/$/, "") + path + "?alt=json-in-script&max-results=" + C.maxPosts + "&callback=" + cb;
+    return C.blogUrl.replace(/\/$/, "") + path + "?alt=json-in-script&max-results=" + C.maxPosts +
+      (q ? "&q=" + encodeURIComponent(q) : "") + "&callback=" + cb;
   }
   function jsonp(url, timeoutMs) {
     return new Promise(function (resolve, reject) {
@@ -90,6 +92,11 @@
     return jsonp(feedUrl(label, "__CB__")).then(function (data) {
       var posts = parseFeed(data);
       store.set(key, { at: Date.now(), posts: posts });
+      if (key === "sb_news" && data.feed && data.feed.category) {
+        var labels = data.feed.category.map(function (c) { return c.term; });
+        store.set("sb_labels", labels);
+        renderChips(labels);
+      }
       renderList(listEl, posts, emptyMsg);
       statusEl.textContent = "";
     }).catch(function () {
@@ -103,11 +110,58 @@
     });
   }
 
+  /* ---------- विषय (Labels) और खोज ---------- */
+  var newsFilter = null; // {label} या {q}
+  function renderChips(labels) {
+    labels = (labels || []).filter(function (l) { return l !== C.gyanLabel; });
+    var active = newsFilter && newsFilter.label;
+    $("chips").innerHTML = '<button class="chip' + (!newsFilter ? " on" : "") + '" data-chip="">सभी</button>' +
+      labels.map(function (l) {
+        return '<button class="chip' + (active === l ? " on" : "") + '" data-chip="' + esc(l) + '">' + esc(l) + "</button>";
+      }).join("");
+  }
+  function showFiltered(filter) {
+    newsFilter = filter;
+    renderChips(store.get("sb_labels"));
+    if (!filter) {
+      $("newsHeading").textContent = "ताज़ा खबरें";
+      var c = store.get("sb_news");
+      if (c && c.posts) renderList($("newsList"), c.posts, "अभी कोई खबर नहीं है।");
+      loadSection("sb_news", "", $("newsList"), $("newsStatus"), "अभी कोई खबर नहीं है। जल्द ही नई खबरें आएँगी।");
+      return;
+    }
+    $("newsHeading").textContent = filter.q ? "खोज: " + filter.q : filter.label;
+    $("newsStatus").textContent = "";
+    skeleton($("newsList"));
+    jsonp(feedUrl(filter.label || "", "__CB__", filter.q)).then(function (data) {
+      if (newsFilter !== filter) return;
+      renderList($("newsList"), parseFeed(data),
+        filter.q ? "इस शब्द से कोई खबर नहीं मिली। कोई दूसरा शब्द आज़माएँ।<br><small>No results. Try another word.</small>"
+                 : "इस विषय में अभी कोई खबर नहीं है।");
+    }).catch(function () {
+      $("newsList").innerHTML = '<div class="empty">इंटरनेट जाँचें और फिर से कोशिश करें।<br><small>Please check your internet connection.</small></div>';
+    });
+  }
+  $("chips").addEventListener("click", function (ev) {
+    var b = ev.target.closest(".chip"); if (!b) return;
+    $("searchInput").value = "";
+    showFiltered(b.dataset.chip ? { label: b.dataset.chip } : null);
+  });
+  $("searchForm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var q = $("searchInput").value.trim();
+    $("searchInput").blur();
+    showFiltered(q ? { q: q } : null);
+  });
+  $("searchInput").addEventListener("search", function () { if (!this.value.trim() && newsFilter) showFiltered(null); });
+  renderChips(store.get("sb_labels"));
+
   function loadAll() {
+    if (newsFilter) { showFiltered(newsFilter); }
     var btn = $("refreshBtn");
     btn.classList.add("spin");
     Promise.all([
-      loadSection("sb_news", "", $("newsList"), $("newsStatus"), "अभी कोई खबर नहीं है। जल्द ही नई खबरें आएँगी।"),
+      newsFilter ? Promise.resolve() : loadSection("sb_news", "", $("newsList"), $("newsStatus"), "अभी कोई खबर नहीं है। जल्द ही नई खबरें आएँगी।"),
       loadSection("sb_gyan", C.gyanLabel, $("gyanList"), $("gyanStatus"),
         "जल्द ही यहाँ उपयोगी जानकारी वाले लेख आएँगे।")
     ]).then(function () { btn.classList.remove("spin"); });
@@ -158,7 +212,7 @@
   window.addEventListener("popstate", function () { if (!$("reader").hidden) closeReader(); });
   $("readerShare").addEventListener("click", function () {
     if (!current) return;
-    var text = current.title + "\n\nसमझो भारत, आगे बढ़ो भारत।";
+    var text = current.title + "\n\nसमझो भारत, आगे बढ़ो भारत।\nऐप डाउनलोड करें: " + C.appShareUrl;
     if (navigator.share) navigator.share({ title: current.title, text: text, url: current.url }).catch(function () {});
     else window.open("https://wa.me/?text=" + encodeURIComponent(text + "\n" + current.url), "_blank");
   });
@@ -187,6 +241,97 @@
     playVideo(vids[0]);
   }
 
+  /* ---------- रोज़ का क्विज़ ---------- */
+  var Quiz = (function () {
+    var bank = window.SB_QUIZ || [];
+    var qs = [], idx = 0, score = 0, answers = [];
+    function todayKey() { // भारतीय समय के हिसाब से आज की तारीख
+      var d = new Date(Date.now() + 5.5 * 3600 * 1000);
+      return d.toISOString().slice(0, 10);
+    }
+    function dayNum(key) { return Math.floor(Date.parse(key + "T00:00:00Z") / 86400000); }
+    function rng(seed) { return function () { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }; }
+    function shuffle(arr, r) { arr = arr.slice(); for (var i = arr.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)); var t = arr[i]; arr[i] = arr[j]; arr[j] = t; } return arr; }
+    function todaysQuestions() {
+      var n = Math.min(C.quizPerDay || 5, bank.length);
+      if (!n) return [];
+      var d = dayNum(todayKey());
+      var perCycle = Math.floor(bank.length / n) || 1;
+      var cycle = Math.floor(d / perCycle), pos = d % perCycle;
+      var order = shuffle(bank.map(function (_, i) { return i; }), rng(cycle + 7));
+      var r = rng(d + 99);
+      return order.slice(pos * n, pos * n + n).map(function (i) {
+        var q = bank[i];
+        var opts = shuffle(q.o.map(function (t, k) { return { t: t, ok: k === q.a }; }), r);
+        return { q: q.q, o: opts, e: q.e };
+      });
+    }
+    function streakInfo() { return store.get("sb_quiz_streak") || { last: "", count: 0 }; }
+    function showStreak() {
+      var s = streakInfo();
+      $("quizStreak").textContent = s.count ? "🔥 लगातार " + s.count + " दिन" : "";
+    }
+    function start() {
+      showStreak();
+      var done = store.get("sb_quiz_done");
+      if (done && done.date === todayKey()) { result(done.score, done.total, true); return; }
+      qs = todaysQuestions(); idx = 0; score = 0; answers = [];
+      if (!qs.length) { $("quizBox").innerHTML = '<div class="empty">जल्द ही नए सवाल आएँगे।</div>'; return; }
+      ask();
+    }
+    function ask() {
+      var q = qs[idx];
+      $("quizBox").innerHTML =
+        '<div class="qprog"><span>सवाल ' + (idx + 1) + " / " + qs.length + '</span><span>स्कोर: ' + score + '</span></div>' +
+        '<div class="qbar"><i style="width:' + (idx / qs.length * 100) + '%"></i></div>' +
+        '<h3 class="qtext">' + esc(q.q) + "</h3>" +
+        q.o.map(function (o, k) { return '<button class="qopt" data-k="' + k + '">' + esc(o.t) + "</button>"; }).join("") +
+        '<div id="qexp"></div>';
+    }
+    function pick(k) {
+      var q = qs[idx];
+      if (q.answered) return;
+      q.answered = true;
+      var ok = q.o[k].ok;
+      if (ok) score++;
+      document.querySelectorAll(".qopt").forEach(function (b, i) {
+        b.disabled = true;
+        if (q.o[i].ok) b.classList.add("right");
+        else if (i === k) b.classList.add("wrong");
+      });
+      $("qexp").innerHTML = '<div class="qexp ' + (ok ? "good" : "bad") + '"><b>' + (ok ? "सही जवाब! ✔" : "गलत जवाब ✘") + "</b><br>" + esc(q.e) + "</div>" +
+        '<button class="btn" id="qnext">' + (idx + 1 < qs.length ? "अगला सवाल →" : "नतीजा देखें") + "</button>";
+    }
+    function next() {
+      idx++;
+      if (idx < qs.length) { ask(); window.scrollTo(0, 0); return; }
+      var t = todayKey(), s = streakInfo();
+      var y = new Date(Date.parse(t + "T00:00:00Z") - 86400000).toISOString().slice(0, 10);
+      if (s.last !== t) { s.count = s.last === y ? s.count + 1 : 1; s.last = t; store.set("sb_quiz_streak", s); }
+      store.set("sb_quiz_done", { date: t, score: score, total: qs.length });
+      showStreak();
+      result(score, qs.length, false);
+    }
+    function result(sc, total, already) {
+      var msg = sc === total ? "शानदार! सारे जवाब सही।" : sc >= total - 1 ? "बहुत बढ़िया!" : sc >= total / 2 ? "अच्छा प्रयास!" : "कोई बात नहीं, कल फिर कोशिश करें।";
+      $("quizBox").innerHTML = '<div class="qresult"><div class="qscore">' + sc + " / " + total + "</div><h3>" + msg + "</h3>" +
+        "<p>" + (already ? "आज का क्विज़ आप पूरा कर चुके हैं।" : "आज का क्विज़ पूरा हुआ।") + " कल नए सवाल आएँगे।<br><small>New questions every day.</small></p>" +
+        '<button class="btn btn-wa" id="qshare">दोस्तों को चुनौती दें (WhatsApp)</button></div>';
+    }
+    function share() {
+      var d = store.get("sb_quiz_done") || { score: 0, total: 0 };
+      var text = "मैंने आज 'समझो भारत' का GK क्विज़ खेला और " + d.score + "/" + d.total + " अंक पाए! 🇮🇳\nक्या आप मुझसे ज़्यादा ला सकते हैं?\n\nऐप: " + C.appShareUrl;
+      if (navigator.share) navigator.share({ title: "समझो भारत क्विज़", text: text }).catch(function () {});
+      else window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+    }
+    $("quizBox").addEventListener("click", function (ev) {
+      var o = ev.target.closest(".qopt"); if (o) { pick(+o.dataset.k); return; }
+      if (ev.target.closest("#qnext")) { next(); return; }
+      if (ev.target.closest("#qshare")) share();
+    });
+    return { start: start };
+  })();
+
   /* ---------- सोशल लिंक और तथ्य ---------- */
   $("linkList").innerHTML = C.links.map(function (l) {
     return '<a class="link" style="--c:' + esc(l.color) + '" href="' + esc(l.url) + '" target="_blank" rel="noopener"><b>' +
@@ -198,7 +343,7 @@
 
   /* ---------- शुरुआत ---------- */
   var startTab = new URLSearchParams(location.search).get("tab") || "news";
-  if (["news", "gyan", "video", "links"].indexOf(startTab) < 0) startTab = "news";
+  if (["news", "gyan", "quiz", "video", "links"].indexOf(startTab) < 0) startTab = "news";
   showTab(startTab);
   loadAll();
 
