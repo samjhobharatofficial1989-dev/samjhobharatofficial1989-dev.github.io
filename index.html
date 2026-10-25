@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>समझो भारत</title>
+<meta name="description" content="समझो भारत — ताज़ा खबरें, उपयोगी जानकारी और वीडियो। समझो भारत, आगे बढ़ो भारत।">
+<meta name="theme-color" content="#0B2545">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <img src="icons/icon-192.png" alt="" class="logo">
+  <div class="brand">
+    <h1>समझो भारत</h1>
+    <p class="tagline">समझो भारत, आगे बढ़ो भारत।</p>
+  </div>
+  <button id="refreshBtn" class="icon-btn" aria-label="ताज़ा करें">
+    <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+  </button>
+</header>
+
+<main id="main">
+  <!-- खबरें -->
+  <section id="tab-news" class="tab active" aria-label="खबरें">
+    <div class="section-head"><h2>ताज़ा खबरें</h2><span id="newsStatus" class="status"></span></div>
+    <div id="newsList" class="list"></div>
+  </section>
+
+  <!-- जानकारी -->
+  <section id="tab-gyan" class="tab" aria-label="जानकारी">
+    <div class="section-head"><h2>अच्छी जानकारी</h2><span id="gyanStatus" class="status"></span></div>
+    <div id="gyanList" class="list"></div>
+    <h3 class="sub">क्या आप जानते हैं?</h3>
+    <div id="factList" class="facts"></div>
+  </section>
+
+  <!-- वीडियो -->
+  <section id="tab-video" class="tab" aria-label="वीडियो">
+    <div class="section-head"><h2>हमारे वीडियो</h2></div>
+    <div class="video-wrap">
+      <iframe id="ytFrame" title="समझो भारत के वीडियो" loading="lazy"
+        allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+    <a class="btn btn-yt" href="https://www.youtube.com/@SamjhoBharatIn" target="_blank" rel="noopener">YouTube चैनल खोलें और Subscribe करें</a>
+    <p class="hint">Watch our latest videos and subscribe to the channel.</p>
+  </section>
+
+  <!-- जुड़ें -->
+  <section id="tab-links" class="tab" aria-label="हमसे जुड़ें">
+    <div class="section-head"><h2>हमसे जुड़ें</h2></div>
+    <p class="hint">Follow Samjho Bharat on all platforms.</p>
+    <div id="linkList" class="links"></div>
+    <div class="about">
+      <h3>समझो भारत के बारे में</h3>
+      <p>समझो भारत देश-दुनिया की खबरों और उपयोगी जानकारी को आसान हिंदी में आप तक पहुँचाता है।</p>
+      <p><a href="privacy.html">गोपनीयता नीति (Privacy Policy)</a></p>
+      <p class="small">संस्करण 1.0</p>
+    </div>
+  </section>
+</main>
+
+<!-- लेख पढ़ने की स्क्रीन -->
+<div id="reader" class="reader" hidden>
+  <div class="reader-bar">
+    <button id="readerBack" class="icon-btn" aria-label="वापस">
+      <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg>
+    </button>
+    <span class="reader-title">समझो भारत</span>
+    <button id="readerShare" class="icon-btn" aria-label="शेयर करें">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .24.04.47.09.7L8.04 9.81A3 3 0 1 0 8.04 14.2l7.12 4.16c-.05.21-.08.43-.08.65A2.92 2.92 0 1 0 18 16.08z"/></svg>
+    </button>
+  </div>
+  <article id="readerBody" class="reader-body"></article>
+</div>
+
+<nav class="bottomnav" aria-label="मुख्य मेनू">
+  <button data-tab="news" class="active"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h13v16H5a1 1 0 0 1-1-1V4zm15 4h1v11a2 2 0 0 1-2 2V8zM7 7v3h7V7H7zm0 5v1.5h7V12H7zm0 3.5V17h7v-1.5H7z"/></svg><span>खबरें</span></button>
+  <button data-tab="gyan"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>जानकारी</span></button>
+  <button data-tab="video"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M21 6.5a2.5 2.5 0 0 0-1.76-1.77C17.68 4.3 12 4.3 12 4.3s-5.68 0-7.24.43A2.5 2.5 0 0 0 3 6.5 26 26 0 0 0 2.6 12 26 26 0 0 0 3 17.5a2.5 2.5 0 0 0 1.76 1.77c1.56.43 7.24.43 7.24.43s5.68 0 7.24-.43A2.5 2.5 0 0 0 21 17.5a26 26 0 0 0 .4-5.5 26 26 0 0 0-.4-5.5zM10 15.2V8.8l5.2 3.2-5.2 3.2z"/></svg><span>वीडियो</span></button>
+  <button data-tab="links"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05A4.22 4.22 0 0 1 17 16.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span>जुड़ें</span></button>
+</nav>
+
+<footer class="slogan">देश को समझिए, समझो भारत के साथ।</footer>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
