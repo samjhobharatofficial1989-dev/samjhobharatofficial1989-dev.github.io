@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "in.samjhobharat.app",
+        "sha256_cert_fingerprints": ["9F:48:1D:AD:CB:04:65:E6:E3:2E:4F:53:FB:51:2B:DA:8F:FC:FC:17:5F:40:CC:39:A5:DA:EC:EC:21:F0:89:39"]
+      }
+    }]
