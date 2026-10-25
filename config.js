@@ -16,6 +16,15 @@ window.SB_CONFIG = {
   // YouTube चैनल ID (UC... से शुरू)
   youtubeChannelId: "UC5_5H3KtMPTCb7LJrz3cpgw",
 
+  // ऐप में दिखने वाले वीडियो — नया वीडियो सबसे ऊपर जोड़ें।
+  // id = YouTube लिंक में v= के बाद वाले 11 अक्षर (Shorts में /shorts/ के बाद वाले)
+  videos: [
+    { id: "NDZ_ix1MqKA", title: "बिहार में ₹4,092 करोड़ का निवेश: वादे या असली बदलाव? गया मैन्युफैक्चरिंग सिटी | पूरी कहानी" },
+    { id: "2dG_P4xV5Ns", title: "Cyber Alert: SBI, eMudhra, PHP और AI से जुड़ी चेतावनियाँ आसान भाषा में" },
+    { id: "nG6Is7ecY_w", title: "बिहार में ₹4,092 करोड़ का निवेश! 12 कंपनियों से समझौता, गया में बनेगी मैन्युफैक्चरिंग सिटी" },
+    { id: "9KOtONzeoQY", title: "सऊदी पर हूतियों का बड़ा हमला! रियाद-दम्माम एयरपोर्ट निशाने पर, एयर इंडिया उड़ानें रुकीं" }
+  ],
+
   // सोशल मीडिया लिंक
   links: [
     { name: "YouTube",          handle: "@SamjhoBharatIn",          url: "https://www.youtube.com/@SamjhoBharatIn",                    color: "#FF0000" },

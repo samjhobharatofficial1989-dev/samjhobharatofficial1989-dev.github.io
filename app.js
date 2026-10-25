@@ -165,11 +165,26 @@
 
   /* ---------- वीडियो ---------- */
   var videosLoaded = false;
+  function playVideo(v) {
+    $("ytFrame").src = "https://www.youtube.com/embed/" + encodeURIComponent(v.id) + "?rel=0&playsinline=1";
+    $("ytNow").textContent = v.title;
+    document.querySelectorAll(".vitem").forEach(function (b) { b.classList.toggle("playing", b.dataset.vid === v.id); });
+  }
   function loadVideos() {
     if (videosLoaded) return;
     videosLoaded = true;
-    var uploads = "UU" + C.youtubeChannelId.slice(2); // चैनल की सभी वीडियो वाली playlist
-    $("ytFrame").src = "https://www.youtube.com/embed/videoseries?list=" + uploads;
+    var vids = C.videos || [];
+    if (!vids.length) { $("videoList").innerHTML = '<div class="empty">जल्द ही नए वीडियो आएँगे।</div>'; return; }
+    $("videoList").innerHTML = vids.map(function (v) {
+      return '<button class="vitem" data-vid="' + esc(v.id) + '"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/' +
+        encodeURIComponent(v.id) + '/mqdefault.jpg"><span>' + esc(v.title) + "</span></button>";
+    }).join("");
+    $("videoList").addEventListener("click", function (ev) {
+      var b = ev.target.closest(".vitem"); if (!b) return;
+      var v = vids.filter(function (x) { return x.id === b.dataset.vid; })[0];
+      if (v) { playVideo(v); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    });
+    playVideo(vids[0]);
   }
 
   /* ---------- सोशल लिंक और तथ्य ---------- */
