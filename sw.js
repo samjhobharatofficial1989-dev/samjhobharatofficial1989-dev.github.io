@@ -1,5 +1,5 @@
 /* समझो भारत — Service Worker: ऑफ़लाइन कॉपी, तस्वीरें सहेजना, नई खबर की सूचना। नया संस्करण डालें तो VERSION बदलें। */
-const VERSION = "sb-v11";
+const VERSION = "sb-v12";
 const DATA = "sb-data";   // feed.json और सूचना की स्थिति (संस्करण बदलने पर भी बनी रहती है)
 const IMG = "sb-img";     // खबरों और वीडियो की तस्वीरें
 const TRC = "sb-tr";      // अनुवादित लेख
