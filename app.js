@@ -78,7 +78,7 @@
     var e = TR && TR.posts && p.pid ? TR.posts[p.pid] : null;
     if (!e) return { title: p.title, labels: p.labels.map(trLabel), state: "none" };
     if (e.same) return { title: p.title, labels: p.labels.map(trLabel), state: "same" };
-    return { title: e.t || p.title, labels: (e.l && e.l.length ? e.l : p.labels.map(trLabel)), state: "done" };
+    return { title: e.t || p.title, labels: p.labels.map(trLabel), state: "done" };
   }
   function trLabel(l) { return (TR && TR.static && TR.static.labels && TR.static.labels[l]) || l; }
   function trStatic(key) { return TR && TR.static ? TR.static[key] : null; }
