@@ -16,6 +16,7 @@ window.SB_LANGS = [
 
 window.SB_STR = {
   hi: {
+    brand: "समझो भारत", logo_letter: "स", tagline: "समझो भारत, आगे बढ़ो भारत।", slogan: "देश को समझिए, समझो भारत के साथ।", share_app: "ऐप डाउनलोड करें:", share_quiz: "मैंने आज 'समझो भारत' का GK क्विज़ खेला और {n} अंक पाए! 🇮🇳\nक्या आप मुझसे ज़्यादा ला सकते हैं?",
     tr_loading: "अनुवाद लोड हो रहा है…", tr_pending: "इस लेख का अनुवाद जल्द आएगा। तब तक नीचे वाले बटन से पढ़ें।",
     nav_news: "खबरें", nav_gyan: "जानकारी", nav_quiz: "क्विज़", nav_video: "वीडियो", nav_links: "जुड़ें",
     search_ph: "खबर खोजें…", all: "सभी", latest: "ताज़ा खबरें", search_prefix: "खोज: ",
@@ -36,6 +37,7 @@ window.SB_STR = {
     q_share: "दोस्तों को चुनौती दें (WhatsApp)", q_streak: "🔥 लगातार {n} दिन", q_empty: "जल्द ही नए सवाल आएँगे।", v_empty: "जल्द ही नए वीडियो आएँगे।"
   },
   en: {
+    brand: "Samjho Bharat", logo_letter: "S", tagline: "Understand Bharat, take Bharat forward.", slogan: "Understand the nation, with Samjho Bharat.", share_app: "Download the app:", share_quiz: "I played today's Samjho Bharat GK quiz and scored {n}! 🇮🇳\nCan you beat me?",
     tr_loading: "Loading translation…", tr_pending: "The translation of this article is coming soon. Until then, use the button below.",
     nav_news: "News", nav_gyan: "Info", nav_quiz: "Quiz", nav_video: "Videos", nav_links: "Connect",
     search_ph: "Search news…", all: "All", latest: "Latest news", search_prefix: "Search: ",
@@ -56,6 +58,7 @@ window.SB_STR = {
     q_share: "Challenge friends (WhatsApp)", q_streak: "🔥 {n}-day streak", q_empty: "New questions are coming soon.", v_empty: "New videos are coming soon."
   },
   bn: {
+    brand: "সমঝো ভারত", logo_letter: "স", tagline: "ভারতকে বুঝুন, ভারতকে এগিয়ে নিন।", slogan: "দেশকে বুঝুন, সমঝো ভারতের সঙ্গে।", share_app: "অ্যাপ ডাউনলোড করুন:", share_quiz: "আজ আমি 'সমঝো ভারত'-এর GK কুইজ খেলে {n} পেয়েছি! 🇮🇳\nআপনি কি আমার চেয়ে বেশি পাবেন?",
     tr_loading: "অনুবাদ লোড হচ্ছে…", tr_pending: "এই লেখার অনুবাদ শিগগিরই আসবে। ততক্ষণ নিচের বোতাম দিয়ে পড়ুন।",
     nav_news: "খবর", nav_gyan: "তথ্য", nav_quiz: "কুইজ", nav_video: "ভিডিও", nav_links: "যুক্ত হন",
     search_ph: "খবর খুঁজুন…", all: "সব", latest: "সর্বশেষ খবর", search_prefix: "খোঁজ: ",
@@ -76,6 +79,7 @@ window.SB_STR = {
     q_share: "বন্ধুদের চ্যালেঞ্জ দিন (WhatsApp)", q_streak: "🔥 টানা {n} দিন", q_empty: "শিগগিরই নতুন প্রশ্ন আসবে।", v_empty: "শিগগিরই নতুন ভিডিও আসবে।"
   },
   mr: {
+    brand: "समझो भारत", logo_letter: "स", tagline: "भारत समजून घ्या, भारताला पुढे न्या.", slogan: "देश समजून घ्या, समझो भारतसोबत.", share_app: "ॲप डाउनलोड करा:", share_quiz: "मी आज 'समझो भारत'चे GK क्विझ खेळलो आणि {n} गुण मिळवले! 🇮🇳\nतुम्ही माझ्यापेक्षा जास्त मिळवू शकता का?",
     tr_loading: "भाषांतर लोड होत आहे…", tr_pending: "या लेखाचे भाषांतर लवकरच येईल. तोपर्यंत खालील बटणाने वाचा.",
     nav_news: "बातम्या", nav_gyan: "माहिती", nav_quiz: "क्विझ", nav_video: "व्हिडिओ", nav_links: "जोडा",
     search_ph: "बातमी शोधा…", all: "सर्व", latest: "ताज्या बातम्या", search_prefix: "शोध: ",
@@ -96,6 +100,7 @@ window.SB_STR = {
     q_share: "मित्रांना आव्हान द्या (WhatsApp)", q_streak: "🔥 सलग {n} दिवस", q_empty: "लवकरच नवीन प्रश्न येतील.", v_empty: "लवकरच नवीन व्हिडिओ येतील."
   },
   te: {
+    brand: "సమఝో భారత్", logo_letter: "స", tagline: "భారత్‌ను అర్థం చేసుకోండి, భారత్‌ను ముందుకు నడిపించండి.", slogan: "దేశాన్ని అర్థం చేసుకోండి, సమఝో భారత్‌తో.", share_app: "యాప్ డౌన్‌లోడ్ చేయండి:", share_quiz: "నేను ఈరోజు 'సమఝో భారత్' GK క్విజ్ ఆడి {n} స్కోర్ చేశాను! 🇮🇳\nమీరు నాకంటే ఎక్కువ తెచ్చుకోగలరా?",
     tr_loading: "అనువాదం లోడ్ అవుతోంది…", tr_pending: "ఈ వ్యాసం అనువాదం త్వరలో వస్తుంది. అప్పటివరకు కింది బటన్‌తో చదవండి.",
     nav_news: "వార్తలు", nav_gyan: "సమాచారం", nav_quiz: "క్విజ్", nav_video: "వీడియోలు", nav_links: "కలవండి",
     search_ph: "వార్తలు వెతకండి…", all: "అన్నీ", latest: "తాజా వార్తలు", search_prefix: "వెతుకు: ",
@@ -116,6 +121,7 @@ window.SB_STR = {
     q_share: "స్నేహితులకు సవాల్ చేయండి (WhatsApp)", q_streak: "🔥 వరుసగా {n} రోజులు", q_empty: "త్వరలో కొత్త ప్రశ్నలు వస్తాయి.", v_empty: "త్వరలో కొత్త వీడియోలు వస్తాయి."
   },
   ta: {
+    brand: "சமஜோ பாரத்", logo_letter: "ச", tagline: "பாரதத்தைப் புரிந்துகொள்ளுங்கள், பாரதத்தை முன்னேற்றுங்கள்.", slogan: "நாட்டைப் புரிந்துகொள்ளுங்கள், சமஜோ பாரத்துடன்.", share_app: "செயலியைப் பதிவிறக்குங்கள்:", share_quiz: "இன்று 'சமஜோ பாரத்' GK வினாடி வினாவில் {n} மதிப்பெண் பெற்றேன்! 🇮🇳\nநீங்கள் என்னைவிட அதிகம் பெற முடியுமா?",
     tr_loading: "மொழிபெயர்ப்பு ஏற்றப்படுகிறது…", tr_pending: "இந்தக் கட்டுரையின் மொழிபெயர்ப்பு விரைவில் வரும். அதுவரை கீழே உள்ள பொத்தானில் படியுங்கள்.",
     nav_news: "செய்திகள்", nav_gyan: "தகவல்", nav_quiz: "வினாடி வினா", nav_video: "வீடியோ", nav_links: "இணையுங்கள்",
     search_ph: "செய்தி தேடுங்கள்…", all: "அனைத்தும்", latest: "சமீபத்திய செய்திகள்", search_prefix: "தேடல்: ",
@@ -136,6 +142,7 @@ window.SB_STR = {
     q_share: "நண்பர்களுக்குச் சவால் விடுங்கள் (WhatsApp)", q_streak: "🔥 தொடர்ந்து {n} நாள்", q_empty: "விரைவில் புதிய கேள்விகள் வரும்.", v_empty: "விரைவில் புதிய வீடியோக்கள் வரும்."
   },
   gu: {
+    brand: "સમઝો ભારત", logo_letter: "સ", tagline: "ભારતને સમજો, ભારતને આગળ વધારો.", slogan: "દેશને સમજો, સમઝો ભારત સાથે.", share_app: "એપ ડાઉનલોડ કરો:", share_quiz: "મેં આજે 'સમઝો ભારત'ની GK ક્વિઝ રમીને {n} ગુણ મેળવ્યા! 🇮🇳\nશું તમે મારાથી વધુ લાવી શકો?",
     tr_loading: "અનુવાદ લોડ થઈ રહ્યો છે…", tr_pending: "આ લેખનો અનુવાદ જલદી આવશે. ત્યાં સુધી નીચેના બટનથી વાંચો.",
     nav_news: "સમાચાર", nav_gyan: "માહિતી", nav_quiz: "ક્વિઝ", nav_video: "વિડિયો", nav_links: "જોડાઓ",
     search_ph: "સમાચાર શોધો…", all: "બધા", latest: "તાજા સમાચાર", search_prefix: "શોધ: ",
@@ -156,6 +163,7 @@ window.SB_STR = {
     q_share: "મિત્રોને પડકાર આપો (WhatsApp)", q_streak: "🔥 સતત {n} દિવસ", q_empty: "જલદી નવા પ્રશ્નો આવશે.", v_empty: "જલદી નવા વિડિયો આવશે."
   },
   ur: {
+    brand: "سمجھو بھارت", logo_letter: "س", tagline: "بھارت کو سمجھیں، بھارت کو آگے بڑھائیں۔", slogan: "ملک کو سمجھیں، سمجھو بھارت کے ساتھ۔", share_app: "ایپ ڈاؤن لوڈ کریں:", share_quiz: "میں نے آج 'سمجھو بھارت' کا GK کوئز کھیلا اور {n} نمبر حاصل کیے! 🇮🇳\nکیا آپ مجھ سے زیادہ لا سکتے ہیں؟",
     tr_loading: "ترجمہ لوڈ ہو رہا ہے…", tr_pending: "اس مضمون کا ترجمہ جلد آئے گا۔ تب تک نیچے والے بٹن سے پڑھیں۔",
     nav_news: "خبریں", nav_gyan: "معلومات", nav_quiz: "کوئز", nav_video: "ویڈیو", nav_links: "جڑیں",
     search_ph: "خبر تلاش کریں…", all: "سب", latest: "تازہ خبریں", search_prefix: "تلاش: ",
@@ -176,6 +184,7 @@ window.SB_STR = {
     q_share: "دوستوں کو چیلنج دیں (WhatsApp)", q_streak: "🔥 مسلسل {n} دن", q_empty: "جلد ہی نئے سوال آئیں گے۔", v_empty: "جلد ہی نئی ویڈیوز آئیں گی۔"
   },
   kn: {
+    brand: "ಸಮಝೋ ಭಾರತ್", logo_letter: "ಸ", tagline: "ಭಾರತವನ್ನು ಅರಿಯಿರಿ, ಭಾರತವನ್ನು ಮುನ್ನಡೆಸಿ.", slogan: "ದೇಶವನ್ನು ಅರಿಯಿರಿ, ಸಮಝೋ ಭಾರತ್ ಜೊತೆ.", share_app: "ಆ್ಯಪ್ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ:", share_quiz: "ನಾನು ಇಂದು 'ಸಮಝೋ ಭಾರತ್' GK ರಸಪ್ರಶ್ನೆ ಆಡಿ {n} ಅಂಕ ಪಡೆದೆ! 🇮🇳\nನೀವು ನನಗಿಂತ ಹೆಚ್ಚು ಪಡೆಯಬಲ್ಲಿರಾ?",
     tr_loading: "ಅನುವಾದ ಲೋಡ್ ಆಗುತ್ತಿದೆ…", tr_pending: "ಈ ಲೇಖನದ ಅನುವಾದ ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ. ಅಲ್ಲಿಯವರೆಗೆ ಕೆಳಗಿನ ಬಟನ್ ಮೂಲಕ ಓದಿ.",
     nav_news: "ಸುದ್ದಿ", nav_gyan: "ಮಾಹಿತಿ", nav_quiz: "ರಸಪ್ರಶ್ನೆ", nav_video: "ವೀಡಿಯೊ", nav_links: "ಸೇರಿ",
     search_ph: "ಸುದ್ದಿ ಹುಡುಕಿ…", all: "ಎಲ್ಲಾ", latest: "ಇತ್ತೀಚಿನ ಸುದ್ದಿ", search_prefix: "ಹುಡುಕಾಟ: ",
@@ -196,6 +205,7 @@ window.SB_STR = {
     q_share: "ಸ್ನೇಹಿತರಿಗೆ ಸವಾಲು ಹಾಕಿ (WhatsApp)", q_streak: "🔥 ಸತತ {n} ದಿನ", q_empty: "ಶೀಘ್ರದಲ್ಲೇ ಹೊಸ ಪ್ರಶ್ನೆಗಳು ಬರಲಿವೆ.", v_empty: "ಶೀಘ್ರದಲ್ಲೇ ಹೊಸ ವೀಡಿಯೊಗಳು ಬರಲಿವೆ."
   },
   or: {
+    brand: "ସମଝୋ ଭାରତ", logo_letter: "ସ", tagline: "ଭାରତକୁ ବୁଝନ୍ତୁ, ଭାରତକୁ ଆଗକୁ ନିଅନ୍ତୁ।", slogan: "ଦେଶକୁ ବୁଝନ୍ତୁ, ସମଝୋ ଭାରତ ସହ।", share_app: "ଆପ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ:", share_quiz: "ମୁଁ ଆଜି 'ସମଝୋ ଭାରତ' GK କୁଇଜ୍ ଖେଳି {n} ନମ୍ବର ପାଇଲି! 🇮🇳\nଆପଣ ମୋଠାରୁ ଅଧିକ ପାଇପାରିବେ କି?",
     tr_loading: "ଅନୁବାଦ ଲୋଡ୍ ହେଉଛି…", tr_pending: "ଏହି ଲେଖାର ଅନୁବାଦ ଶୀଘ୍ର ଆସିବ। ସେପର୍ଯ୍ୟନ୍ତ ତଳ ବଟନ୍‌ରେ ପଢ଼ନ୍ତୁ।",
     nav_news: "ଖବର", nav_gyan: "ସୂଚନା", nav_quiz: "କୁଇଜ୍", nav_video: "ଭିଡିଓ", nav_links: "ଯୋଡ଼ି ହୁଅନ୍ତୁ",
     search_ph: "ଖବର ଖୋଜନ୍ତୁ…", all: "ସବୁ", latest: "ତାଜା ଖବର", search_prefix: "ଖୋଜ: ",
@@ -216,6 +226,7 @@ window.SB_STR = {
     q_share: "ସାଙ୍ଗମାନଙ୍କୁ ଚ୍ୟାଲେଞ୍ଜ କରନ୍ତୁ (WhatsApp)", q_streak: "🔥 ଲଗାତାର {n} ଦିନ", q_empty: "ଶୀଘ୍ର ନୂଆ ପ୍ରଶ୍ନ ଆସିବ।", v_empty: "ଶୀଘ୍ର ନୂଆ ଭିଡିଓ ଆସିବ।"
   },
   ml: {
+    brand: "സമഝോ ഭാരത്", logo_letter: "സ", tagline: "ഭാരതത്തെ അറിയൂ, ഭാരതത്തെ മുന്നോട്ട് നയിക്കൂ.", slogan: "രാജ്യത്തെ അറിയൂ, സമഝോ ഭാരതിനൊപ്പം.", share_app: "ആപ്പ് ഡൗൺലോഡ് ചെയ്യൂ:", share_quiz: "ഞാൻ ഇന്ന് 'സമഝോ ഭാരത്' GK ക്വിസ് കളിച്ച് {n} സ്കോർ നേടി! 🇮🇳\nനിങ്ങൾക്ക് എന്നെക്കാൾ കൂടുതൽ നേടാനാകുമോ?",
     tr_loading: "വിവർത്തനം ലോഡ് ചെയ്യുന്നു…", tr_pending: "ഈ ലേഖനത്തിന്റെ വിവർത്തനം ഉടൻ വരും. അതുവരെ താഴെയുള്ള ബട്ടൺ വഴി വായിക്കൂ.",
     nav_news: "വാർത്ത", nav_gyan: "വിവരം", nav_quiz: "ക്വിസ്", nav_video: "വീഡിയോ", nav_links: "ചേരൂ",
     search_ph: "വാർത്ത തിരയൂ…", all: "എല്ലാം", latest: "പുതിയ വാർത്തകൾ", search_prefix: "തിരയൽ: ",
@@ -236,6 +247,7 @@ window.SB_STR = {
     q_share: "സുഹൃത്തുക്കളെ വെല്ലുവിളിക്കൂ (WhatsApp)", q_streak: "🔥 തുടർച്ചയായി {n} ദിവസം", q_empty: "ഉടൻ പുതിയ ചോദ്യങ്ങൾ വരും.", v_empty: "ഉടൻ പുതിയ വീഡിയോകൾ വരും."
   },
   pa: {
+    brand: "ਸਮਝੋ ਭਾਰਤ", logo_letter: "ਸ", tagline: "ਭਾਰਤ ਨੂੰ ਸਮਝੋ, ਭਾਰਤ ਨੂੰ ਅੱਗੇ ਵਧਾਓ।", slogan: "ਦੇਸ਼ ਨੂੰ ਸਮਝੋ, ਸਮਝੋ ਭਾਰਤ ਦੇ ਨਾਲ।", share_app: "ਐਪ ਡਾਊਨਲੋਡ ਕਰੋ:", share_quiz: "ਮੈਂ ਅੱਜ 'ਸਮਝੋ ਭਾਰਤ' ਦਾ GK ਕੁਇਜ਼ ਖੇਡਿਆ ਅਤੇ {n} ਅੰਕ ਲਏ! 🇮🇳\nਕੀ ਤੁਸੀਂ ਮੇਰੇ ਤੋਂ ਵੱਧ ਲੈ ਸਕਦੇ ਹੋ?",
     tr_loading: "ਅਨੁਵਾਦ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…", tr_pending: "ਇਸ ਲੇਖ ਦਾ ਅਨੁਵਾਦ ਜਲਦੀ ਆਵੇਗਾ। ਤਦ ਤੱਕ ਹੇਠਾਂ ਦਿੱਤੇ ਬਟਨ ਨਾਲ ਪੜ੍ਹੋ।",
     nav_news: "ਖ਼ਬਰਾਂ", nav_gyan: "ਜਾਣਕਾਰੀ", nav_quiz: "ਕੁਇਜ਼", nav_video: "ਵੀਡੀਓ", nav_links: "ਜੁੜੋ",
     search_ph: "ਖ਼ਬਰ ਖੋਜੋ…", all: "ਸਾਰੀਆਂ", latest: "ਤਾਜ਼ਾ ਖ਼ਬਰਾਂ", search_prefix: "ਖੋਜ: ",
@@ -281,6 +293,10 @@ window.SB_I18N = (function () {
     document.querySelectorAll("[data-i18n]").forEach(function (el) { el.textContent = t(el.getAttribute("data-i18n")); });
     document.querySelectorAll("[data-i18n-ph]").forEach(function (el) { el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph"))); });
     var lb = document.getElementById("langBtnText"); if (lb) lb.textContent = L.name;
+    document.title = t("brand");
+    document.title = t("brand");
+    var lg = document.getElementById("logoLetter"), li = document.getElementById("logoImg");
+    if (lg && li) { var useImg = lang === "hi" || lang === "mr"; li.hidden = !useImg; lg.hidden = useImg; lg.textContent = t("logo_letter"); }
   }
   function set(code) {
     if (!window.SB_STR[code]) return;

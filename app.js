@@ -56,7 +56,7 @@
       return {
         id: (e.id && e.id.$t) || Math.random().toString(36),
         pid: (((e.id && e.id.$t) || "").match(/post-(\d+)/) || [])[1] || "",
-        title: (e.title && e.title.$t) || "(बिना शीर्षक)",
+        title: (e.title && e.title.$t) || "—",
         url: link ? link.href : C.blogUrl,
         date: e.published ? e.published.$t : "",
         labels: (e.category || []).map(function (c) { return c.term; }),
@@ -107,7 +107,7 @@
       var tp = trPost(p);
       var labels = tp.labels.slice(0, 2).map(function (l) { return '<span class="tag">' + esc(l) + "</span>"; }).join("");
       var img = p.img ? '<img class="thumb" loading="lazy" alt="" src="' + esc(p.img) + '">'
-        : '<div class="thumb ph"><span>' + esc(tp.labels[0] || "समझो भारत") + "</span></div>";
+        : '<div class="thumb ph"><span>' + esc(tp.labels[0] || T("brand")) + "</span></div>";
       return '<button class="card' + (i === 0 && p.img ? " hero" : "") + '" data-id="' + esc(p.id) + '">' + img +
         '<div class="body"><h3>' + esc(tp.title) + '</h3><div class="meta">' + labels + fmtDate(p.date) + "</div></div></button>";
     }).join("");
@@ -133,7 +133,7 @@
         statusEl.textContent = T("offline");
       } else {
         statusEl.textContent = "";
-        listEl.innerHTML = '<div class="empty">' + T("load_fail") + '<br><small>Please check your internet connection.</small>' +
+        listEl.innerHTML = '<div class="empty">' + T("load_fail") + '<br><small class="hint-en">Please check your internet connection.</small>' +
           '<button class="btn" data-retry="1">' + T("retry") + '</button></div>';
       }
     });
@@ -165,9 +165,9 @@
     jsonp(feedUrl(filter.label || "", "__CB__", filter.q)).then(function (data) {
       if (newsFilter !== filter) return;
       renderList($("newsList"), parseFeed(data),
-        filter.q ? T("no_results") + "<br><small>No results. Try another word.</small>" : T("no_label"));
+        filter.q ? T("no_results") + "<br><small class='hint-en'>No results. Try another word.</small>" : T("no_label"));
     }).catch(function () {
-      $("newsList").innerHTML = '<div class="empty">' + T("load_fail") + '<br><small>Please check your internet connection.</small></div>';
+      $("newsList").innerHTML = '<div class="empty">' + T("load_fail") + '<br><small class="hint-en">Please check your internet connection.</small></div>';
     });
   }
   $("chips").addEventListener("click", function (ev) {
@@ -241,7 +241,7 @@
       '<a class="btn btn-cm" href="' + esc(p.url.split("#")[0] + "#comments") + '" target="_blank" rel="noopener">' + esc(T("comment_btn")) + "</a>" +
       '<p class="small">' + esc(T("comment_note")) + "</p></div>" +
       '<a class="btn btn-ghost" href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(T("read_blog")) + "</a>" +
-      '<p class="slogan">देश को समझिए, समझो भारत के साथ।</p>';
+      '<p class="slogan">' + esc(T("slogan")) + "</p>";
     $("reader").hidden = false;
     $("reader").scrollTop = 0;
     document.body.style.overflow = "hidden";
@@ -268,7 +268,7 @@
   window.addEventListener("popstate", function () { if (!$("reader").hidden) closeReader(); });
   $("readerShare").addEventListener("click", function () {
     if (!current) return;
-    var text = trPost(current).title + "\n\nसमझो भारत, आगे बढ़ो भारत।\nऐप डाउनलोड करें: " + C.appShareUrl;
+    var text = trPost(current).title + "\n\n" + T("tagline") + "\n" + T("share_app") + " " + C.appShareUrl;
     if (navigator.share) navigator.share({ title: current.title, text: text, url: current.url }).catch(function () {});
     else window.open("https://wa.me/?text=" + encodeURIComponent(text + "\n" + current.url), "_blank");
   });
@@ -380,13 +380,13 @@
     function result(sc, total, already) {
       var msg = sc === total ? T("q_m4") : sc >= total - 1 ? T("q_m3") : sc >= total / 2 ? T("q_m2") : T("q_m1");
       $("quizBox").innerHTML = '<div class="qresult"><div class="qscore">' + sc + " / " + total + "</div><h3>" + msg + "</h3>" +
-        "<p>" + (already ? T("q_already") : T("q_done")) + " " + T("q_tomorrow") + "<br><small>New questions every day.</small></p>" +
+        "<p>" + (already ? T("q_already") : T("q_done")) + " " + T("q_tomorrow") + "<br><small class='hint-en'>New questions every day.</small></p>" +
         '<button class="btn btn-wa" id="qshare">' + T("q_share") + '</button></div>';
     }
     function share() {
       var d = store.get("sb_quiz_done") || { score: 0, total: 0 };
-      var text = "मैंने आज 'समझो भारत' का GK क्विज़ खेला और " + d.score + "/" + d.total + " अंक पाए! 🇮🇳\nक्या आप मुझसे ज़्यादा ला सकते हैं?\n\nऐप: " + C.appShareUrl;
-      if (navigator.share) navigator.share({ title: "समझो भारत क्विज़", text: text }).catch(function () {});
+      var text = T("share_quiz", d.score + "/" + d.total) + "\n\n" + T("share_app") + " " + C.appShareUrl;
+      if (navigator.share) navigator.share({ title: T("brand") + " — " + T("nav_quiz"), text: text }).catch(function () {});
       else window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
     }
     $("quizBox").addEventListener("click", function (ev) {
