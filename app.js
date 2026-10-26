@@ -2,6 +2,8 @@
 (function () {
   "use strict";
   var C = window.SB_CONFIG;
+  var I = window.SB_I18N, T = I.t;
+  I.apply();
   var $ = function (id) { return document.getElementById(id); };
   var store = {
     get: function (k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
@@ -57,6 +59,7 @@
         url: link ? link.href : C.blogUrl,
         date: e.published ? e.published.$t : "",
         labels: (e.category || []).map(function (c) { return c.term; }),
+        comments: e.thr$total ? +e.thr$total.$t : null,
         img: img,
         html: html
       };
@@ -64,7 +67,7 @@
   }
   function fmtDate(iso) {
     if (!iso) return "";
-    try { return new Date(iso).toLocaleDateString("hi-IN", { day: "numeric", month: "long", year: "numeric" }); }
+    try { return new Date(iso).toLocaleDateString(I.get() + "-IN", { day: "numeric", month: "long", year: "numeric" }); }
     catch (e) { return iso.slice(0, 10); }
   }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -87,7 +90,7 @@
 
   function loadSection(key, label, listEl, statusEl, emptyMsg) {
     var cached = store.get(key);
-    if (cached && cached.posts) { renderList(listEl, cached.posts, emptyMsg); statusEl.textContent = "अपडेट हो रहा है…"; }
+    if (cached && cached.posts) { renderList(listEl, cached.posts, emptyMsg); statusEl.textContent = T("updating"); }
     else skeleton(listEl);
     return jsonp(feedUrl(label, "__CB__")).then(function (data) {
       var posts = parseFeed(data);
@@ -101,11 +104,11 @@
       statusEl.textContent = "";
     }).catch(function () {
       if (cached && cached.posts) {
-        statusEl.textContent = "ऑफ़लाइन — पुरानी खबरें";
+        statusEl.textContent = T("offline");
       } else {
         statusEl.textContent = "";
-        listEl.innerHTML = '<div class="empty">खबरें लोड नहीं हो पाईं। इंटरनेट जाँचें।<br><small>Please check your internet connection.</small>' +
-          '<button class="btn" data-retry="1">फिर से कोशिश करें</button></div>';
+        listEl.innerHTML = '<div class="empty">' + T("load_fail") + '<br><small>Please check your internet connection.</small>' +
+          '<button class="btn" data-retry="1">' + T("retry") + '</button></div>';
       }
     });
   }
@@ -115,7 +118,7 @@
   function renderChips(labels) {
     labels = (labels || []).filter(function (l) { return l !== C.gyanLabel; });
     var active = newsFilter && newsFilter.label;
-    $("chips").innerHTML = '<button class="chip' + (!newsFilter ? " on" : "") + '" data-chip="">सभी</button>' +
+    $("chips").innerHTML = '<button class="chip' + (!newsFilter ? " on" : "") + '" data-chip="">' + T("all") + '</button>' +
       labels.map(function (l) {
         return '<button class="chip' + (active === l ? " on" : "") + '" data-chip="' + esc(l) + '">' + esc(l) + "</button>";
       }).join("");
@@ -124,22 +127,21 @@
     newsFilter = filter;
     renderChips(store.get("sb_labels"));
     if (!filter) {
-      $("newsHeading").textContent = "ताज़ा खबरें";
+      $("newsHeading").textContent = T("latest");
       var c = store.get("sb_news");
-      if (c && c.posts) renderList($("newsList"), c.posts, "अभी कोई खबर नहीं है।");
-      loadSection("sb_news", "", $("newsList"), $("newsStatus"), "अभी कोई खबर नहीं है। जल्द ही नई खबरें आएँगी।");
+      if (c && c.posts) renderList($("newsList"), c.posts, T("no_news"));
+      loadSection("sb_news", "", $("newsList"), $("newsStatus"), T("no_news"));
       return;
     }
-    $("newsHeading").textContent = filter.q ? "खोज: " + filter.q : filter.label;
+    $("newsHeading").textContent = filter.q ? T("search_prefix") + filter.q : filter.label;
     $("newsStatus").textContent = "";
     skeleton($("newsList"));
     jsonp(feedUrl(filter.label || "", "__CB__", filter.q)).then(function (data) {
       if (newsFilter !== filter) return;
       renderList($("newsList"), parseFeed(data),
-        filter.q ? "इस शब्द से कोई खबर नहीं मिली। कोई दूसरा शब्द आज़माएँ।<br><small>No results. Try another word.</small>"
-                 : "इस विषय में अभी कोई खबर नहीं है।");
+        filter.q ? T("no_results") + "<br><small>No results. Try another word.</small>" : T("no_label"));
     }).catch(function () {
-      $("newsList").innerHTML = '<div class="empty">इंटरनेट जाँचें और फिर से कोशिश करें।<br><small>Please check your internet connection.</small></div>';
+      $("newsList").innerHTML = '<div class="empty">' + T("load_fail") + '<br><small>Please check your internet connection.</small></div>';
     });
   }
   $("chips").addEventListener("click", function (ev) {
@@ -161,9 +163,8 @@
     var btn = $("refreshBtn");
     btn.classList.add("spin");
     Promise.all([
-      newsFilter ? Promise.resolve() : loadSection("sb_news", "", $("newsList"), $("newsStatus"), "अभी कोई खबर नहीं है। जल्द ही नई खबरें आएँगी।"),
-      loadSection("sb_gyan", C.gyanLabel, $("gyanList"), $("gyanStatus"),
-        "जल्द ही यहाँ उपयोगी जानकारी वाले लेख आएँगे।")
+      newsFilter ? Promise.resolve() : loadSection("sb_news", "", $("newsList"), $("newsStatus"), T("no_news")),
+      loadSection("sb_gyan", C.gyanLabel, $("gyanList"), $("gyanStatus"), T("gyan_empty"))
     ]).then(function () { btn.classList.remove("spin"); });
   }
 
@@ -186,12 +187,31 @@
     });
     return doc.body.firstChild.innerHTML;
   }
+  /* Google Translate के पते से लेख किसी भी भाषा में खोलना */
+  function translateUrl(url, tl) {
+    try {
+      var u = new URL(url);
+      var host = u.hostname.replace(/-/g, "--").replace(/\./g, "-") + ".translate.goog";
+      var q = u.search ? u.search.slice(1) + "&" : "";
+      return "https://" + host + u.pathname + "?" + q + "_x_tr_sl=auto&_x_tr_tl=" + tl + "&_x_tr_hl=" + tl + "&_x_tr_pto=wapp";
+    } catch (e) { return url; }
+  }
   function openPost(p, push) {
     current = p;
+    var lang = I.get();
+    var postLang = /[\u0900-\u097F]/.test(p.title) ? "hi" : "en";
+    var tr = lang !== postLang
+      ? '<a class="btn btn-tr" href="' + esc(translateUrl(p.url, lang)) + '" target="_blank" rel="noopener">🌐 ' + esc(T("read_lang")) + '</a>' +
+        '<p class="small mt">' + esc(T("mt_note")) + "</p>"
+      : "";
+    var cm = p.comments ? T("comment_count", p.comments) : T("no_comments");
     $("readerBody").innerHTML =
-      "<h1>" + esc(p.title) + '</h1><div class="meta small">' + fmtDate(p.date) + "</div>" +
+      "<h1>" + esc(p.title) + '</h1><div class="meta small">' + fmtDate(p.date) + "</div>" + tr +
       cleanHtml(p.html) +
-      '<a class="btn" href="' + esc(p.url) + '" target="_blank" rel="noopener">ब्लॉग पर पूरा लेख देखें</a>' +
+      '<div class="comments"><h3>💬 ' + esc(T("comments")) + '</h3><p class="small">' + esc(cm) + "</p>" +
+      '<a class="btn btn-cm" href="' + esc(p.url.split("#")[0] + "#comments") + '" target="_blank" rel="noopener">' + esc(T("comment_btn")) + "</a>" +
+      '<p class="small">' + esc(T("comment_note")) + "</p></div>" +
+      '<a class="btn btn-ghost" href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(T("read_blog")) + "</a>" +
       '<p class="slogan">देश को समझिए, समझो भारत के साथ।</p>';
     $("reader").hidden = false;
     $("reader").scrollTop = 0;
@@ -228,7 +248,7 @@
     if (videosLoaded) return;
     videosLoaded = true;
     var vids = C.videos || [];
-    if (!vids.length) { $("videoList").innerHTML = '<div class="empty">जल्द ही नए वीडियो आएँगे।</div>'; return; }
+    if (!vids.length) { $("videoList").innerHTML = '<div class="empty">' + T("v_empty") + '</div>'; return; }
     $("videoList").innerHTML = vids.map(function (v) {
       return '<button class="vitem" data-vid="' + esc(v.id) + '"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/' +
         encodeURIComponent(v.id) + '/mqdefault.jpg"><span>' + esc(v.title) + "</span></button>";
@@ -269,20 +289,20 @@
     function streakInfo() { return store.get("sb_quiz_streak") || { last: "", count: 0 }; }
     function showStreak() {
       var s = streakInfo();
-      $("quizStreak").textContent = s.count ? "🔥 लगातार " + s.count + " दिन" : "";
+      $("quizStreak").textContent = s.count ? T("q_streak", s.count) : "";
     }
     function start() {
       showStreak();
       var done = store.get("sb_quiz_done");
       if (done && done.date === todayKey()) { result(done.score, done.total, true); return; }
       qs = todaysQuestions(); idx = 0; score = 0; answers = [];
-      if (!qs.length) { $("quizBox").innerHTML = '<div class="empty">जल्द ही नए सवाल आएँगे।</div>'; return; }
+      if (!qs.length) { $("quizBox").innerHTML = '<div class="empty">' + T("q_empty") + '</div>'; return; }
       ask();
     }
     function ask() {
       var q = qs[idx];
       $("quizBox").innerHTML =
-        '<div class="qprog"><span>सवाल ' + (idx + 1) + " / " + qs.length + '</span><span>स्कोर: ' + score + '</span></div>' +
+        '<div class="qprog"><span>' + T("q_label") + " " + (idx + 1) + " / " + qs.length + '</span><span>' + T("q_score") + ": " + score + '</span></div>' +
         '<div class="qbar"><i style="width:' + (idx / qs.length * 100) + '%"></i></div>' +
         '<h3 class="qtext">' + esc(q.q) + "</h3>" +
         q.o.map(function (o, k) { return '<button class="qopt" data-k="' + k + '">' + esc(o.t) + "</button>"; }).join("") +
@@ -299,8 +319,8 @@
         if (q.o[i].ok) b.classList.add("right");
         else if (i === k) b.classList.add("wrong");
       });
-      $("qexp").innerHTML = '<div class="qexp ' + (ok ? "good" : "bad") + '"><b>' + (ok ? "सही जवाब! ✔" : "गलत जवाब ✘") + "</b><br>" + esc(q.e) + "</div>" +
-        '<button class="btn" id="qnext">' + (idx + 1 < qs.length ? "अगला सवाल →" : "नतीजा देखें") + "</button>";
+      $("qexp").innerHTML = '<div class="qexp ' + (ok ? "good" : "bad") + '"><b>' + (ok ? T("q_right") : T("q_wrong")) + "</b><br>" + esc(q.e) + "</div>" +
+        '<button class="btn" id="qnext">' + (idx + 1 < qs.length ? T("q_next") : T("q_result")) + "</button>";
     }
     function next() {
       idx++;
@@ -313,10 +333,10 @@
       result(score, qs.length, false);
     }
     function result(sc, total, already) {
-      var msg = sc === total ? "शानदार! सारे जवाब सही।" : sc >= total - 1 ? "बहुत बढ़िया!" : sc >= total / 2 ? "अच्छा प्रयास!" : "कोई बात नहीं, कल फिर कोशिश करें।";
+      var msg = sc === total ? T("q_m4") : sc >= total - 1 ? T("q_m3") : sc >= total / 2 ? T("q_m2") : T("q_m1");
       $("quizBox").innerHTML = '<div class="qresult"><div class="qscore">' + sc + " / " + total + "</div><h3>" + msg + "</h3>" +
-        "<p>" + (already ? "आज का क्विज़ आप पूरा कर चुके हैं।" : "आज का क्विज़ पूरा हुआ।") + " कल नए सवाल आएँगे।<br><small>New questions every day.</small></p>" +
-        '<button class="btn btn-wa" id="qshare">दोस्तों को चुनौती दें (WhatsApp)</button></div>';
+        "<p>" + (already ? T("q_already") : T("q_done")) + " " + T("q_tomorrow") + "<br><small>New questions every day.</small></p>" +
+        '<button class="btn btn-wa" id="qshare">' + T("q_share") + '</button></div>';
     }
     function share() {
       var d = store.get("sb_quiz_done") || { score: 0, total: 0 };
@@ -340,6 +360,20 @@
   $("factList").innerHTML = C.facts.map(function (f) { return '<div class="fact">' + esc(f) + "</div>"; }).join("");
 
   $("refreshBtn").addEventListener("click", loadAll);
+
+  /* ---------- भाषा चुनना ---------- */
+  $("langList").innerHTML = window.SB_LANGS.map(function (l) {
+    return '<button class="lang-opt' + (l.code === I.get() ? " on" : "") + '" data-lang="' + l.code + '" lang="' + l.code + '"' +
+      (l.rtl ? ' dir="rtl"' : "") + ">" + esc(l.name) + "</button>";
+  }).join("");
+  $("langBtn").addEventListener("click", function () { $("langSheet").hidden = false; });
+  $("langSheet").addEventListener("click", function (ev) {
+    var b = ev.target.closest(".lang-opt");
+    if (b) {
+      if (b.dataset.lang !== I.get()) { I.set(b.dataset.lang); store.set("sb_news", null); location.reload(); return; }
+    }
+    if (b || ev.target === $("langSheet")) $("langSheet").hidden = true;
+  });
 
   /* ---------- शुरुआत ---------- */
   var startTab = new URLSearchParams(location.search).get("tab") || "news";

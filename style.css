@@ -131,3 +131,30 @@ main{max-width:720px;margin:0 auto;padding:12px 16px}
 .qresult h3{margin:6px 0}
 .btn-wa{background:#25D366;margin-top:10px}
 .bottomnav button span{font-size:12px}
+
+/* भाषा (Language) */
+.lang-btn{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;
+  border-radius:20px;padding:4px 10px;font-size:13px;cursor:pointer;white-space:nowrap}
+.sheet{position:fixed;inset:0;z-index:40;background:rgba(5,12,25,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none}
+.sheet-box{background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));
+  max-height:80vh;overflow-y:auto}
+.sheet-box h3{margin:0}
+.lang-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.lang-opt{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;font-size:17px;cursor:pointer;font-family:system-ui,sans-serif}
+.lang-opt.on{border-color:var(--saffron);background:var(--chip);font-weight:700}
+[dir=rtl] body, [dir=rtl] .card, [dir=rtl] .vitem, [dir=rtl] .qopt{text-align:right}
+[dir=rtl] .tag{margin-right:0;margin-left:6px}
+[dir=rtl] .fact{border-left:0;border-right:4px solid var(--green)}
+html:not([lang=hi]):not([lang=mr]):not([lang=en]) body{font-family:system-ui,"Noto Sans",sans-serif}
+
+/* अनुवाद और टिप्पणियाँ */
+.btn-tr{background:var(--navy);margin:12px 0 4px}
+.mt{margin:0 0 12px}
+.comments{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.comments h3{margin:0 0 4px}
+.btn-cm{background:var(--green);margin:8px 0}
+.btn-ghost{background:none;color:var(--saffron);border:2px solid var(--saffron)}
+/* उर्दू (RTL) में हिंदी/अंग्रेज़ी सामग्री सही दिशा में दिखे */
+[dir=rtl] .card h3,[dir=rtl] .qtext,[dir=rtl] .qopt,[dir=rtl] .qexp,[dir=rtl] .fact,[dir=rtl] .vitem span,[dir=rtl] .now,
+[dir=rtl] .reader-body h1,[dir=rtl] .reader-body p,[dir=rtl] .reader-body li,[dir=rtl] .reader-body h2,[dir=rtl] .reader-body h3,[dir=rtl] .chip{unicode-bidi:plaintext;text-align:start}
