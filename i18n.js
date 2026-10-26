@@ -274,10 +274,8 @@ window.SB_I18N = (function () {
   var KEY = "sb_lang";
   function saved() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function guess() {
-    var nav = (navigator.languages || [navigator.language || "hi"]).map(function (l) { return String(l).slice(0, 2).toLowerCase(); });
-    // फ़ोन की भाषा English हो तो भी हिंदी से शुरू करें; बाकी भारतीय भाषाएँ अपने आप चुनें
-    for (var i = 0; i < nav.length; i++) if (nav[i] !== "en" && window.SB_STR[nav[i]]) return nav[i];
-    return "hi";
+    // ऐप हमेशा English में खुलेगा; पढ़ने वाला ऊपर के भाषा बटन से हिंदी या कोई दूसरी भाषा चुन सकता है
+    return "en";
   }
   var lang = saved();
   if (!window.SB_STR[lang]) lang = guess();
