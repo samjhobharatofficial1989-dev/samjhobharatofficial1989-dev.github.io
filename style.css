@@ -165,3 +165,27 @@ html:not([lang=hi]):not([lang=mr]):not([lang=en]) body{font-family:system-ui,"No
 html:not([lang=hi]) .hint-en{display:none}
 /* लंबी भाषाओं में tagline दो लाइन से ज़्यादा न हो */
 .tagline{font-size:12.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* अनुवादित card (तस्वीर जैसा डिज़ाइन, हर भाषा में) */
+.xcard{position:relative;overflow:hidden;color:#fff;text-align:start;background:linear-gradient(160deg,#0B2545 0%,#13315C 60%,#0B2545 100%);
+  border-radius:12px;display:flex;flex-direction:column;font-family:system-ui,"Noto Sans",sans-serif}
+.xtop{height:5px;background:var(--saffron);flex:none}
+.xbrand{display:flex;align-items:center;gap:8px;padding:10px 14px 0;font-size:14px}
+.xlogo{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--saffron);font-size:14px}
+.xtag{align-self:flex-start;margin:14px 14px 0;background:#D93025;font-weight:700;font-size:12px;padding:2px 10px;border-radius:20px}
+.xh{font-size:22px;font-weight:700;line-height:1.25;margin:8px 14px 0}
+.xrule{width:50px;height:4px;background:var(--saffron);border-radius:3px;margin:10px 14px 4px}
+.xpts{list-style:none;margin:0;padding:0 14px 8px}
+.xpts li{display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.35;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.xpts i{flex:none;width:20px;height:20px;border-radius:50%;background:var(--green);font-style:normal;font-size:12px;font-weight:700;display:grid;place-items:center;margin-top:1px}
+.xfoot{margin-top:auto;background:var(--saffron);text-align:center;font-weight:700;font-size:13px;padding:7px 8px}
+.xcard-full{aspect-ratio:4/5;margin:12px 0}
+.xcard-full .xh{font-size:clamp(22px,6.5vw,34px)}
+.xcard-full .xpts li{font-size:clamp(14px,4.2vw,20px)}
+.card.hero .xcard-hero{width:100%;aspect-ratio:16/9;height:auto}
+.xcard-hero .xbrand,.xcard-hero .xpts li:nth-child(n+3){display:none}
+.xcard-hero .xtag{margin-top:10px}.xcard-hero .xh{font-size:19px}
+.xcard-mini{flex:0 0 96px;height:72px;padding:0;justify-content:center;border-radius:10px}
+.xcard-mini .xbrand,.xcard-mini .xtag,.xcard-mini .xrule,.xcard-mini .xpts,.xcard-mini .xfoot{display:none}
+.xcard-mini .xh{font-size:11.5px;margin:4px 6px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.card .xcard{background:linear-gradient(160deg,#0B2545 0%,#13315C 60%,#0B2545 100%);object-fit:initial}

@@ -80,6 +80,23 @@
     if (e.same) return { title: p.title, labels: p.labels.map(trLabel), state: "same" };
     return { title: e.t || p.title, labels: p.labels.map(trLabel), state: "done" };
   }
+  /* card वाली तस्वीर की जगह उसी डिज़ाइन का HTML card, पढ़ने वाले की भाषा में */
+  function trCard(p) {
+    if (I.get() === "hi" || I.get() === "mr") return null;
+    var c = TR && TR.static && TR.static.cards && p.pid ? TR.static.cards[p.pid] : null;
+    return c && c.headline ? c : null;
+  }
+  function cardHtml(c, cls) {
+    var pts = (c.points || []).map(function (t, k) { return "<li><i>" + (k + 1) + "</i><span>" + esc(t) + "</span></li>"; }).join("");
+    return '<div class="xcard ' + cls + '"><div class="xtop"></div><div class="xbrand"><b class="xlogo">' + esc(T("logo_letter")) + "</b><b>" + esc(T("brand")) + "</b></div>" +
+      '<div class="xtag">' + esc(c.tag || "") + '</div><div class="xh">' + esc(c.headline) + '</div><div class="xrule"></div><ul class="xpts">' + pts + "</ul>" +
+      '<div class="xfoot">' + esc(T("tagline")) + "</div></div>";
+  }
+  function swapCardImg(html, p) {
+    var c = trCard(p); if (!c) return html;
+    var done = false;
+    return html.replace(/<img\b[^>]*>/i, function () { done = true; return cardHtml(c, "xcard-full"); });
+  }
   function trLabel(l) { return (TR && TR.static && TR.static.labels && TR.static.labels[l]) || l; }
   function trStatic(key) { return TR && TR.static ? TR.static[key] : null; }
   /* Apps Script से अनुवाद लाना (cookies के बिना, ताकि कई Google account वाले फ़ोन में भी चले) */
@@ -106,7 +123,9 @@
       postsById[p.id] = p;
       var tp = trPost(p);
       var labels = tp.labels.slice(0, 2).map(function (l) { return '<span class="tag">' + esc(l) + "</span>"; }).join("");
-      var img = p.img ? '<img class="thumb" loading="lazy" alt="" src="' + esc(p.img) + '">'
+      var xc = trCard(p);
+      var img = xc ? cardHtml(xc, i === 0 ? "xcard-hero thumb" : "xcard-mini thumb")
+        : p.img ? '<img class="thumb" loading="lazy" alt="" src="' + esc(p.img) + '">'
         : '<div class="thumb ph"><span>' + esc(tp.labels[0] || T("brand")) + "</span></div>";
       return '<button class="card' + (i === 0 && p.img ? " hero" : "") + '" data-id="' + esc(p.id) + '">' + img +
         '<div class="body"><h3>' + esc(tp.title) + '</h3><div class="meta">' + labels + fmtDate(p.date) + "</div></div></button>";
@@ -248,7 +267,7 @@
     if (push !== false) history.pushState({ reader: true }, "");
     if (tp.state === "done" && C.trApi && !trHtmlCache[lang + p.pid]) {
       trGet("?a=post&lang=" + lang + "&id=" + encodeURIComponent(p.pid)).then(function (d) {
-        var html = d && d.h ? cleanHtml(d.h) : cleanHtml(p.html);
+        var html = swapCardImg(d && d.h ? cleanHtml(d.h) : cleanHtml(p.html), p);
         if (d && d.h) trHtmlCache[lang + p.pid] = html;
         if (current === p && $("postBody")) $("postBody").innerHTML = html;
       }).catch(function () { if (current === p && $("postBody")) $("postBody").innerHTML = cleanHtml(p.html); });
