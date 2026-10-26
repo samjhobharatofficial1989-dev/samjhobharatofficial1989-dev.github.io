@@ -34,6 +34,11 @@
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16a6.47 6.47 0 0 0 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
       <input id="searchInput" type="search" placeholder="खबर खोजें…" data-i18n-ph="search_ph" enterkeyhint="search" autocomplete="off">
     </form>
+    <div id="notifBanner" class="nbanner" hidden>
+      <span data-i18n="notif_ask">नई खबर आते ही सूचना पाना चाहते हैं?</span>
+      <span class="nbtns"><button class="btn btn-sm" type="button" data-notif-on="1" data-i18n="notif_on">चालू करें</button>
+      <button class="btn btn-sm btn-ghost2" type="button" data-notif-later="1" data-i18n="notif_later">बाद में</button></span>
+    </div>
     <div id="chips" class="chips"></div>
     <div class="section-head"><h2 id="newsHeading" data-i18n="latest">ताज़ा खबरें</h2><span id="newsStatus" class="status"></span></div>
     <div id="newsList" class="list"></div>
@@ -45,6 +50,13 @@
     <div id="gyanList" class="list"></div>
     <h3 class="sub" data-i18n="did_you_know">क्या आप जानते हैं?</h3>
     <div id="factList" class="facts"></div>
+  </section>
+
+  <!-- पैसे का हिसाब (कैलकुलेटर) -->
+  <section id="tab-calc" class="tab" aria-label="कैलकुलेटर">
+    <div class="section-head"><h2 data-i18n="calc_head">पैसे का हिसाब (कैलकुलेटर)</h2></div>
+    <p class="hint-en hint">Simple tools for interest, loans and inflation.</p>
+    <div id="calcBox"></div>
   </section>
 
   <!-- क्विज़ -->
@@ -61,6 +73,7 @@
         allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
     <h3 id="ytNow" class="now"></h3>
+    <button id="videoShare" class="btn btn-wa btn-sm" type="button">📤 <span data-i18n="share_btn">शेयर करें</span></button>
     <div id="videoList" class="vlist"></div>
     <a class="btn btn-yt" href="https://www.youtube.com/@SamjhoBharatIn" target="_blank" rel="noopener" data-i18n="yt_btn">YouTube चैनल खोलें और Subscribe करें</a>
     <p class="hint-en hint">Watch our latest videos and subscribe to the channel.</p>
@@ -71,11 +84,14 @@
     <div class="section-head"><h2 data-i18n="links_head">हमसे जुड़ें</h2></div>
     <p class="hint-en hint">Follow Samjho Bharat on all platforms.</p>
     <div id="linkList" class="links"></div>
+    <button id="shareApp" class="btn btn-wa mt2" type="button" data-i18n="share_app_btn">📲 ऐप दोस्तों को भेजें</button>
+    <div id="notifBox" class="about"></div>
+    <p id="offlineInfo" class="small center"></p>
     <div class="about">
       <h3 data-i18n="about_head">समझो भारत के बारे में</h3>
       <p data-i18n="about_text">समझो भारत देश-दुनिया की खबरों और उपयोगी जानकारी को आसान भाषा में आप तक पहुँचाता है।</p>
       <p><a href="privacy.html"><span data-i18n="privacy">गोपनीयता नीति</span><span class="hint-en"> (Privacy Policy)</span></a></p>
-      <p class="small"><span data-i18n="version">संस्करण</span> 1.4</p>
+      <p class="small"><span data-i18n="version">संस्करण</span> 1.5</p>
     </div>
   </section>
 </main>
@@ -87,6 +103,8 @@
       <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg>
     </button>
     <span class="reader-title" data-i18n="brand">समझो भारत</span>
+    <button id="readerFont" class="icon-btn txt-btn" aria-label="अक्षर का आकार / Text size">Aa</button>
+    <button id="readerSave" class="icon-btn txt-btn star-btn" aria-label="सहेजें / Save">☆</button>
     <button id="readerShare" class="icon-btn" aria-label="शेयर करें">
       <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .24.04.47.09.7L8.04 9.81A3 3 0 1 0 8.04 14.2l7.12 4.16c-.05.21-.08.43-.08.65A2.92 2.92 0 1 0 18 16.08z"/></svg>
     </button>
@@ -97,6 +115,7 @@
 <nav class="bottomnav" aria-label="मुख्य मेनू">
   <button data-tab="news" class="active"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h13v16H5a1 1 0 0 1-1-1V4zm15 4h1v11a2 2 0 0 1-2 2V8zM7 7v3h7V7H7zm0 5v1.5h7V12H7zm0 3.5V17h7v-1.5H7z"/></svg><span data-i18n="nav_news">खबरें</span></button>
   <button data-tab="gyan"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span data-i18n="nav_gyan">जानकारी</span></button>
+  <button data-tab="calc"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm1 7v2h2v-2H8zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H8zm4 0v2h2v-2h-2zm4 0v5h2v-5h-2zm-8 4v1h6v-1H8z"/></svg><span data-i18n="nav_calc">हिसाब</span></button>
   <button data-tab="quiz"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 17h-2v-2h2v2zm2.07-7.75-.9.92A3.4 3.4 0 0 0 13 15h-2v-.5a4 4 0 0 1 1.17-2.83l1.24-1.26A1.96 1.96 0 0 0 14 9a2 2 0 0 0-4 0H8a4 4 0 0 1 8 0 3.2 3.2 0 0 1-.93 2.25z"/></svg><span data-i18n="nav_quiz">क्विज़</span></button>
   <button data-tab="video"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M21 6.5a2.5 2.5 0 0 0-1.76-1.77C17.68 4.3 12 4.3 12 4.3s-5.68 0-7.24.43A2.5 2.5 0 0 0 3 6.5 26 26 0 0 0 2.6 12 26 26 0 0 0 3 17.5a2.5 2.5 0 0 0 1.76 1.77c1.56.43 7.24.43 7.24.43s5.68 0 7.24-.43A2.5 2.5 0 0 0 21 17.5a26 26 0 0 0 .4-5.5 26 26 0 0 0-.4-5.5zM10 15.2V8.8l5.2 3.2-5.2 3.2z"/></svg><span data-i18n="nav_video">वीडियो</span></button>
   <button data-tab="links"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05A4.22 4.22 0 0 1 17 16.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span data-i18n="nav_links">जुड़ें</span></button>
@@ -115,7 +134,9 @@
 
 <script src="config.js"></script>
 <script src="i18n.js"></script>
+<script src="i18n-extra.js"></script>
 <script src="quiz.js"></script>
+<script src="calc.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

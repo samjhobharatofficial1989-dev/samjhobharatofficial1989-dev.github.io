@@ -16,6 +16,22 @@ window.SB_CONFIG = {
   // लेखों के अनुवाद की सेवा (Google Apps Script web app) — इसे न बदलें
   trApi: "https://script.google.com/macros/s/AKfycbxNry7SeKWwhfJKICxDUzFDtfjgsu0MNLHS6UeGBpiT_54c2kQEorvxl7dlGAlhDj9rtg/exec",
 
+  // ऐप के पाँच सेक्शन। हर सेक्शन में वे पोस्ट दिखेंगी जिन पर ब्लॉग में इनमें से कोई भी Label लगा हो।
+  // labels: [] का मतलब = ब्लॉग की सारी नई पोस्ट। नया Label जोड़ना हो तो बस यहाँ लिख दें।
+  sections: [
+    { key: "news",    name: "sec_news",    labels: [] },
+    { key: "yojana",  name: "sec_yojana",  labels: ["सरकारी योजनाएँ", "सरकारी योजना"] },
+    { key: "paisa",   name: "sec_paisa",   labels: ["पैसा", "Finance", "निवेश"] },
+    { key: "tech",    name: "sec_tech",    labels: ["Technology", "AI", "Cyber Security"] },
+    { key: "rajniti", name: "sec_rajniti", labels: ["राजनीति"] }
+  ],
+
+  // कैलकुलेटर में महँगाई (inflation) की शुरुआती दर (% सालाना)
+  inflationDefault: 6,
+
+  // कैलकुलेटर के विषय का YouTube वीडियो (11 अक्षर वाला id)। खाली छोड़ें तो बटन नहीं दिखेगा।
+  calcVideos: { si: "", ci: "", emi: "", gold: "" },
+
   // रोज़ के क्विज़ में कितने सवाल
   quizPerDay: 5,
 
@@ -25,7 +41,8 @@ window.SB_CONFIG = {
   // YouTube चैनल ID (UC... से शुरू)
   youtubeChannelId: "UC5_5H3KtMPTCb7LJrz3cpgw",
 
-  // ऐप में दिखने वाले वीडियो — नया वीडियो सबसे ऊपर जोड़ें।
+  // वीडियो अब अपने-आप आते हैं (GitHub हर आधे घंटे YouTube चैनल से data/videos.json बनाता है)।
+  // यह सूची सिर्फ़ बैकअप है; यहाँ किसी वीडियो का शीर्षक बदलेंगे तो ऐप में वही दिखेगा।
   // id = YouTube लिंक में v= के बाद वाले 11 अक्षर (Shorts में /shorts/ के बाद वाले)
   videos: [
     { id: "NDZ_ix1MqKA", title: "बिहार में ₹4,092 करोड़ का निवेश: वादे या असली बदलाव? गया मैन्युफैक्चरिंग सिटी | पूरी कहानी" },
@@ -41,7 +58,7 @@ window.SB_CONFIG = {
     { name: "X (Twitter)",      handle: "@SamjhoBharatOfc",            url: "https://x.com/SamjhoBharatOfc",                                  color: "#111111" },
     { name: "Instagram",        handle: "@samjhobharatofficial",    url: "https://www.instagram.com/samjhobharatofficial/",             color: "#E1306C" },
     { name: "Threads",          handle: "@samjhobharatofficial",    url: "https://www.threads.com/@samjhobharatofficial",               color: "#333333" },
-    { name: "WhatsApp Channel", handle: "Samjho Bharat | समझो भारत", url: "https://whatsapp.com/channel/0029Vb8vkA18V0tjUwBikC0L",       color: "#25D366" },
+    { name: "WhatsApp Channel", handle: "Samjhobharatofficial",      url: "https://whatsapp.com/channel/0029Vb8vkA18V0tjUwBikC0L",       color: "#25D366" },
     { name: "Blog",             handle: "samjhobharatofficial",     url: "https://samjhobharatofficial.blogspot.com/",                  color: "#F57D00" }
   ],
 

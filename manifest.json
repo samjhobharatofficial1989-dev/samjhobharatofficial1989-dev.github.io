@@ -1,7 +1,7 @@
 {
   "name": "समझो भारत",
   "short_name": "समझो भारत",
-  "description": "ताज़ा खबरें, उपयोगी जानकारी और वीडियो — समझो भारत, आगे बढ़ो भारत।",
+  "description": "ताज़ा खबरें, सरकारी योजनाएँ, पैसे का हिसाब, Technology और AI, राजनीति और वीडियो — समझो भारत, आगे बढ़ो भारत।",
   "id": "./",
   "start_url": "./?source=app",
   "scope": "./",
@@ -20,6 +20,7 @@
   ],
   "shortcuts": [
     { "name": "खबरें", "url": "./?tab=news", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "वीडियो", "url": "./?tab=video", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+    { "name": "वीडियो", "url": "./?tab=video", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "पैसे का हिसाब", "url": "./?tab=calc", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }
