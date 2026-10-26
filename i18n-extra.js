@@ -291,6 +291,10 @@
       share_app_text: "ਖ਼ਬਰਾਂ, ਸਰਕਾਰੀ ਯੋਜਨਾਵਾਂ, ਪੈਸੇ ਦਾ ਹਿਸਾਬ ਅਤੇ ਹੋਰ ਬਹੁਤ ਕੁਝ, ਸੌਖੀ ਭਾਸ਼ਾ ਵਿੱਚ।", share_btn: "ਸਾਂਝਾ ਕਰੋ"
     }
   };
+  /* ब्लॉग Label "काम की" का हर भाषा में तय नाम */
+  var LBL = { hi: "काम की", en: "Useful", bn: "কাজের কথা", mr: "कामाचे", te: "ఉపయోగకరం", ta: "பயனுள்ளவை", gu: "કામનું",
+    ur: "کام کی بات", kn: "ಉಪಯುಕ್ತ", or: "କାମର କଥା", ml: "ഉപകാരപ്രദം", pa: "ਕੰਮ ਦੀ ਗੱਲ" };
+  Object.keys(LBL).forEach(function (l) { X[l]["lbl:काम की"] = LBL[l]; });
   Object.keys(X).forEach(function (l) {
     window.SB_STR[l] = window.SB_STR[l] || {};
     Object.keys(X[l]).forEach(function (k) { window.SB_STR[l][k] = X[l][k]; });

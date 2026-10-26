@@ -87,7 +87,7 @@ async function checkNews() {
       const p = fresh[0], s = st.s || {}, lang = st.lang || "hi";
       const hindiTitle = /[ऀ-ॿ]/.test(p.title);
       const sameLang = lang === "hi" || (lang === "en" && !hindiTitle);
-      await self.registration.showNotification((s.brand || "Samjho Bharat") + " — " + (s.news || "नई खबर"), {
+      await self.registration.showNotification((s.brand || "समझो भारत") + " — " + (s.news || "नई खबर"), {
         body: sameLang ? p.title : (s.tap || ""), icon: "icons/icon-192.png", badge: "icons/icon-192.png",
         tag: "sb-news", renotify: true, data: { url: "./?post=" + p.pid }
       });
@@ -101,7 +101,7 @@ self.addEventListener("periodicsync", e => { if (e.tag === "sb-news") e.waitUnti
 /* भविष्य में Firebase जैसी push सेवा जोड़ें तो यही हिस्सा सूचना दिखाएगा */
 self.addEventListener("push", e => {
   let d = {}; try { d = e.data ? e.data.json() : {}; } catch (x) { d = { title: e.data && e.data.text() }; }
-  e.waitUntil(self.registration.showNotification(d.title || "Samjho Bharat", { body: d.body || "", icon: "icons/icon-192.png", data: { url: d.url || "./" } }));
+  e.waitUntil(self.registration.showNotification(d.title || "समझो भारत", { body: d.body || "", icon: "icons/icon-192.png", data: { url: d.url || "./" } }));
 });
 self.addEventListener("notificationclick", e => {
   e.notification.close();

@@ -105,7 +105,11 @@
     var c = trCard(p); if (!c) return html;
     return html.replace(/<img\b[^>]*>/i, function () { return cardHtml(c, "xcard-full"); });
   }
-  function trLabel(l) { return (TR && TR.static && TR.static.labels && TR.static.labels[l]) || l; }
+  /* कुछ Label के अपने तय नाम (मशीन अनुवाद से बेहतर), बाकी Apps Script के अनुवाद से */
+  function trLabel(l) {
+    var fixed = window.SB_STR[I.get()] && window.SB_STR[I.get()]["lbl:" + l];
+    return fixed || (TR && TR.static && TR.static.labels && TR.static.labels[l]) || l;
+  }
   function trStatic(key) { return TR && TR.static ? TR.static[key] : null; }
   /* Apps Script से अनुवाद लाना (cookies के बिना, ताकि कई Google account वाले फ़ोन में भी चले) */
   function trGet(q) {
