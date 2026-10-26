@@ -38,7 +38,7 @@ window.SB_CONFIG = {
   links: [
     { name: "YouTube",          handle: "@SamjhoBharatIn",          url: "https://www.youtube.com/@SamjhoBharatIn",                    color: "#FF0000" },
     { name: "Facebook",         handle: "समझो भारत पेज",            url: "https://www.facebook.com/1331876840017238",                   color: "#1877F2" },
-    { name: "X (Twitter)",      handle: "@Samjhobharat",            url: "https://x.com/Samjhobharat",                                  color: "#111111" },
+    { name: "X (Twitter)",      handle: "@SamjhoBharatOfc",            url: "https://x.com/SamjhoBharatOfc",                                  color: "#111111" },
     { name: "Instagram",        handle: "@samjhobharatofficial",    url: "https://www.instagram.com/samjhobharatofficial/",             color: "#E1306C" },
     { name: "Threads",          handle: "@samjhobharatofficial",    url: "https://www.threads.com/@samjhobharatofficial",               color: "#333333" },
     { name: "WhatsApp Channel", handle: "Samjho Bharat | समझो भारत", url: "https://whatsapp.com/channel/0029Vb8vkA18V0tjUwBikC0L",       color: "#25D366" },
