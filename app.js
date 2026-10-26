@@ -55,6 +55,7 @@
       if (!img) { var m = html.match(/<img[^>]+src="([^"]+)"/i); if (m) img = m[1]; }
       return {
         id: (e.id && e.id.$t) || Math.random().toString(36),
+        pid: (((e.id && e.id.$t) || "").match(/post-(\d+)/) || [])[1] || "",
         title: (e.title && e.title.$t) || "(बिना शीर्षक)",
         url: link ? link.href : C.blogUrl,
         date: e.published ? e.published.$t : "",
@@ -70,6 +71,30 @@
     try { return new Date(iso).toLocaleDateString(I.get() + "-IN", { day: "numeric", month: "long", year: "numeric" }); }
     catch (e) { return iso.slice(0, 10); }
   }
+  /* ---------- लेखों का अनुवाद (Apps Script से तैयार अनुवाद) ---------- */
+  var TR = store.get("sbtr_" + I.get());
+  var trHtmlCache = {};
+  function trPost(p) {
+    var e = TR && TR.posts && p.pid ? TR.posts[p.pid] : null;
+    if (!e) return { title: p.title, labels: p.labels.map(trLabel), state: "none" };
+    if (e.same) return { title: p.title, labels: p.labels.map(trLabel), state: "same" };
+    return { title: e.t || p.title, labels: (e.l && e.l.length ? e.l : p.labels.map(trLabel)), state: "done" };
+  }
+  function trLabel(l) { return (TR && TR.static && TR.static.labels && TR.static.labels[l]) || l; }
+  function trStatic(key) { return TR && TR.static ? TR.static[key] : null; }
+  /* Apps Script से अनुवाद लाना (cookies के बिना, ताकि कई Google account वाले फ़ोन में भी चले) */
+  function trGet(q) {
+    return fetch(C.trApi + q, { credentials: "omit" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  function loadTr() {
+    if (!C.trApi) return;
+    var lang = I.get();
+    trGet("?a=list&lang=" + lang).then(function (d) {
+      if (!d || d.lang !== lang) return;
+      TR = d; store.set("sbtr_" + lang, d);
+      rerender();
+    }).catch(function () {});
+  }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
   function renderList(el, posts, emptyMsg) {
@@ -79,11 +104,12 @@
     }
     el.innerHTML = posts.map(function (p, i) {
       postsById[p.id] = p;
-      var labels = p.labels.slice(0, 2).map(function (l) { return '<span class="tag">' + esc(l) + "</span>"; }).join("");
+      var tp = trPost(p);
+      var labels = tp.labels.slice(0, 2).map(function (l) { return '<span class="tag">' + esc(l) + "</span>"; }).join("");
       var img = p.img ? '<img class="thumb" loading="lazy" alt="" src="' + esc(p.img) + '">'
-        : '<div class="thumb ph"><span>' + esc(p.labels[0] || "समझो भारत") + "</span></div>";
+        : '<div class="thumb ph"><span>' + esc(tp.labels[0] || "समझो भारत") + "</span></div>";
       return '<button class="card' + (i === 0 && p.img ? " hero" : "") + '" data-id="' + esc(p.id) + '">' + img +
-        '<div class="body"><h3>' + esc(p.title) + '</h3><div class="meta">' + labels + fmtDate(p.date) + "</div></div></button>";
+        '<div class="body"><h3>' + esc(tp.title) + '</h3><div class="meta">' + labels + fmtDate(p.date) + "</div></div></button>";
     }).join("");
   }
   function skeleton(el) { el.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>'; }
@@ -120,7 +146,7 @@
     var active = newsFilter && newsFilter.label;
     $("chips").innerHTML = '<button class="chip' + (!newsFilter ? " on" : "") + '" data-chip="">' + T("all") + '</button>' +
       labels.map(function (l) {
-        return '<button class="chip' + (active === l ? " on" : "") + '" data-chip="' + esc(l) + '">' + esc(l) + "</button>";
+        return '<button class="chip' + (active === l ? " on" : "") + '" data-chip="' + esc(l) + '">' + esc(trLabel(l)) + "</button>";
       }).join("");
   }
   function showFiltered(filter) {
@@ -133,7 +159,7 @@
       loadSection("sb_news", "", $("newsList"), $("newsStatus"), T("no_news"));
       return;
     }
-    $("newsHeading").textContent = filter.q ? T("search_prefix") + filter.q : filter.label;
+    $("newsHeading").textContent = filter.q ? T("search_prefix") + filter.q : trLabel(filter.label);
     $("newsStatus").textContent = "";
     skeleton($("newsList"));
     jsonp(feedUrl(filter.label || "", "__CB__", filter.q)).then(function (data) {
@@ -200,14 +226,17 @@
     current = p;
     var lang = I.get();
     var postLang = /[\u0900-\u097F]/.test(p.title) ? "hi" : "en";
-    var tr = lang !== postLang
-      ? '<a class="btn btn-tr" href="' + esc(translateUrl(p.url, lang)) + '" target="_blank" rel="noopener">🌐 ' + esc(T("read_lang")) + '</a>' +
-        '<p class="small mt">' + esc(T("mt_note")) + "</p>"
-      : "";
+    var tp = trPost(p);
+    var needTr = tp.state === "done" || (tp.state === "none" && lang !== postLang);
+    var tr = "";
+    if (tp.state === "done") tr = '<p class="small mt">🌐 ' + esc(T("mt_note")) + "</p>";
+    else if (needTr) tr = '<p class="small mt">' + esc(T("tr_pending")) + '</p><a class="btn btn-tr" href="' + esc(translateUrl(p.url, lang)) +
+      '" target="_blank" rel="noopener">🌐 ' + esc(T("read_lang")) + "</a>";
+    var bodyHtml = tp.state === "done" ? (trHtmlCache[lang + p.pid] || '<div class="skeleton"></div><p class="small">' + esc(T("tr_loading")) + "</p>") : cleanHtml(p.html);
     var cm = p.comments ? T("comment_count", p.comments) : T("no_comments");
     $("readerBody").innerHTML =
-      "<h1>" + esc(p.title) + '</h1><div class="meta small">' + fmtDate(p.date) + "</div>" + tr +
-      cleanHtml(p.html) +
+      "<h1>" + esc(tp.title) + '</h1><div class="meta small">' + fmtDate(p.date) + "</div>" + tr +
+      '<div id="postBody">' + bodyHtml + "</div>" +
       '<div class="comments"><h3>💬 ' + esc(T("comments")) + '</h3><p class="small">' + esc(cm) + "</p>" +
       '<a class="btn btn-cm" href="' + esc(p.url.split("#")[0] + "#comments") + '" target="_blank" rel="noopener">' + esc(T("comment_btn")) + "</a>" +
       '<p class="small">' + esc(T("comment_note")) + "</p></div>" +
@@ -217,6 +246,13 @@
     $("reader").scrollTop = 0;
     document.body.style.overflow = "hidden";
     if (push !== false) history.pushState({ reader: true }, "");
+    if (tp.state === "done" && C.trApi && !trHtmlCache[lang + p.pid]) {
+      trGet("?a=post&lang=" + lang + "&id=" + encodeURIComponent(p.pid)).then(function (d) {
+        var html = d && d.h ? cleanHtml(d.h) : cleanHtml(p.html);
+        if (d && d.h) trHtmlCache[lang + p.pid] = html;
+        if (current === p && $("postBody")) $("postBody").innerHTML = html;
+      }).catch(function () { if (current === p && $("postBody")) $("postBody").innerHTML = cleanHtml(p.html); });
+    }
   }
   function closeReader() {
     $("reader").hidden = true;
@@ -232,7 +268,7 @@
   window.addEventListener("popstate", function () { if (!$("reader").hidden) closeReader(); });
   $("readerShare").addEventListener("click", function () {
     if (!current) return;
-    var text = current.title + "\n\nसमझो भारत, आगे बढ़ो भारत।\nऐप डाउनलोड करें: " + C.appShareUrl;
+    var text = trPost(current).title + "\n\nसमझो भारत, आगे बढ़ो भारत।\nऐप डाउनलोड करें: " + C.appShareUrl;
     if (navigator.share) navigator.share({ title: current.title, text: text, url: current.url }).catch(function () {});
     else window.open("https://wa.me/?text=" + encodeURIComponent(text + "\n" + current.url), "_blank");
   });
@@ -247,7 +283,11 @@
   function loadVideos() {
     if (videosLoaded) return;
     videosLoaded = true;
-    var vids = C.videos || [];
+    var tv = trStatic("videos") || [];
+    var vids = (C.videos || []).map(function (v) {
+      var t = tv.filter(function (x) { return x.id === v.id; })[0];
+      return { id: v.id, title: (t && t.title) || v.title };
+    });
     if (!vids.length) { $("videoList").innerHTML = '<div class="empty">' + T("v_empty") + '</div>'; return; }
     $("videoList").innerHTML = vids.map(function (v) {
       return '<button class="vitem" data-vid="' + esc(v.id) + '"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/' +
@@ -264,6 +304,10 @@
   /* ---------- रोज़ का क्विज़ ---------- */
   var Quiz = (function () {
     var bank = window.SB_QUIZ || [];
+    function useBank() {
+      var tq = trStatic("quiz");
+      bank = tq && tq.length === (window.SB_QUIZ || []).length ? tq : (window.SB_QUIZ || []);
+    }
     var qs = [], idx = 0, score = 0, answers = [];
     function todayKey() { // भारतीय समय के हिसाब से आज की तारीख
       var d = new Date(Date.now() + 5.5 * 3600 * 1000);
@@ -292,6 +336,7 @@
       $("quizStreak").textContent = s.count ? T("q_streak", s.count) : "";
     }
     function start() {
+      useBank();
       showStreak();
       var done = store.get("sb_quiz_done");
       if (done && done.date === todayKey()) { result(done.score, done.total, true); return; }
@@ -353,11 +398,25 @@
   })();
 
   /* ---------- सोशल लिंक और तथ्य ---------- */
-  $("linkList").innerHTML = C.links.map(function (l) {
-    return '<a class="link" style="--c:' + esc(l.color) + '" href="' + esc(l.url) + '" target="_blank" rel="noopener"><b>' +
-      esc(l.name) + "</b><span>" + esc(l.handle) + "</span></a>";
-  }).join("");
-  $("factList").innerHTML = C.facts.map(function (f) { return '<div class="fact">' + esc(f) + "</div>"; }).join("");
+  function renderStatic() {
+    var th = trStatic("handles") || [], tf = trStatic("facts");
+    $("linkList").innerHTML = C.links.map(function (l, i) {
+      return '<a class="link" style="--c:' + esc(l.color) + '" href="' + esc(l.url) + '" target="_blank" rel="noopener"><b>' +
+        esc(l.name) + "</b><span>" + esc(th[i] || l.handle) + "</span></a>";
+    }).join("");
+    var facts = tf && tf.length === C.facts.length ? tf : C.facts;
+    $("factList").innerHTML = facts.map(function (f) { return '<div class="fact">' + esc(f) + "</div>"; }).join("");
+  }
+  renderStatic();
+  /* अनुवाद आने पर सब दोबारा दिखाना */
+  function rerender() {
+    renderStatic();
+    renderChips(store.get("sb_labels"));
+    if (newsFilter) showFiltered(newsFilter);
+    else { var n = store.get("sb_news"); if (n && n.posts) renderList($("newsList"), n.posts, T("no_news")); }
+    var g = store.get("sb_gyan"); if (g && g.posts) renderList($("gyanList"), g.posts, T("gyan_empty"));
+    if (videosLoaded) { videosLoaded = false; $("videoList").replaceWith($("videoList").cloneNode(false)); loadVideos(); }
+  }
 
   $("refreshBtn").addEventListener("click", loadAll);
 
@@ -380,6 +439,7 @@
   if (["news", "gyan", "quiz", "video", "links"].indexOf(startTab) < 0) startTab = "news";
   showTab(startTab);
   loadAll();
+  loadTr();
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });

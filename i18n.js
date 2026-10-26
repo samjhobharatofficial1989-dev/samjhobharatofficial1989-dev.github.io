@@ -16,6 +16,7 @@ window.SB_LANGS = [
 
 window.SB_STR = {
   hi: {
+    tr_loading: "अनुवाद लोड हो रहा है…", tr_pending: "इस लेख का अनुवाद जल्द आएगा। तब तक नीचे वाले बटन से पढ़ें।",
     nav_news: "खबरें", nav_gyan: "जानकारी", nav_quiz: "क्विज़", nav_video: "वीडियो", nav_links: "जुड़ें",
     search_ph: "खबर खोजें…", all: "सभी", latest: "ताज़ा खबरें", search_prefix: "खोज: ",
     gyan_head: "अच्छी जानकारी", did_you_know: "क्या आप जानते हैं?", quiz_head: "आज का क्विज़", video_head: "हमारे वीडियो",
@@ -35,6 +36,7 @@ window.SB_STR = {
     q_share: "दोस्तों को चुनौती दें (WhatsApp)", q_streak: "🔥 लगातार {n} दिन", q_empty: "जल्द ही नए सवाल आएँगे।", v_empty: "जल्द ही नए वीडियो आएँगे।"
   },
   en: {
+    tr_loading: "Loading translation…", tr_pending: "The translation of this article is coming soon. Until then, use the button below.",
     nav_news: "News", nav_gyan: "Info", nav_quiz: "Quiz", nav_video: "Videos", nav_links: "Connect",
     search_ph: "Search news…", all: "All", latest: "Latest news", search_prefix: "Search: ",
     gyan_head: "Useful information", did_you_know: "Did you know?", quiz_head: "Today's quiz", video_head: "Our videos",
@@ -54,6 +56,7 @@ window.SB_STR = {
     q_share: "Challenge friends (WhatsApp)", q_streak: "🔥 {n}-day streak", q_empty: "New questions are coming soon.", v_empty: "New videos are coming soon."
   },
   bn: {
+    tr_loading: "অনুবাদ লোড হচ্ছে…", tr_pending: "এই লেখার অনুবাদ শিগগিরই আসবে। ততক্ষণ নিচের বোতাম দিয়ে পড়ুন।",
     nav_news: "খবর", nav_gyan: "তথ্য", nav_quiz: "কুইজ", nav_video: "ভিডিও", nav_links: "যুক্ত হন",
     search_ph: "খবর খুঁজুন…", all: "সব", latest: "সর্বশেষ খবর", search_prefix: "খোঁজ: ",
     gyan_head: "দরকারি তথ্য", did_you_know: "আপনি কি জানেন?", quiz_head: "আজকের কুইজ", video_head: "আমাদের ভিডিও",
@@ -73,6 +76,7 @@ window.SB_STR = {
     q_share: "বন্ধুদের চ্যালেঞ্জ দিন (WhatsApp)", q_streak: "🔥 টানা {n} দিন", q_empty: "শিগগিরই নতুন প্রশ্ন আসবে।", v_empty: "শিগগিরই নতুন ভিডিও আসবে।"
   },
   mr: {
+    tr_loading: "भाषांतर लोड होत आहे…", tr_pending: "या लेखाचे भाषांतर लवकरच येईल. तोपर्यंत खालील बटणाने वाचा.",
     nav_news: "बातम्या", nav_gyan: "माहिती", nav_quiz: "क्विझ", nav_video: "व्हिडिओ", nav_links: "जोडा",
     search_ph: "बातमी शोधा…", all: "सर्व", latest: "ताज्या बातम्या", search_prefix: "शोध: ",
     gyan_head: "उपयुक्त माहिती", did_you_know: "तुम्हाला माहीत आहे का?", quiz_head: "आजचे क्विझ", video_head: "आमचे व्हिडिओ",
@@ -92,6 +96,7 @@ window.SB_STR = {
     q_share: "मित्रांना आव्हान द्या (WhatsApp)", q_streak: "🔥 सलग {n} दिवस", q_empty: "लवकरच नवीन प्रश्न येतील.", v_empty: "लवकरच नवीन व्हिडिओ येतील."
   },
   te: {
+    tr_loading: "అనువాదం లోడ్ అవుతోంది…", tr_pending: "ఈ వ్యాసం అనువాదం త్వరలో వస్తుంది. అప్పటివరకు కింది బటన్‌తో చదవండి.",
     nav_news: "వార్తలు", nav_gyan: "సమాచారం", nav_quiz: "క్విజ్", nav_video: "వీడియోలు", nav_links: "కలవండి",
     search_ph: "వార్తలు వెతకండి…", all: "అన్నీ", latest: "తాజా వార్తలు", search_prefix: "వెతుకు: ",
     gyan_head: "ఉపయోగకరమైన సమాచారం", did_you_know: "మీకు తెలుసా?", quiz_head: "నేటి క్విజ్", video_head: "మా వీడియోలు",
@@ -111,6 +116,7 @@ window.SB_STR = {
     q_share: "స్నేహితులకు సవాల్ చేయండి (WhatsApp)", q_streak: "🔥 వరుసగా {n} రోజులు", q_empty: "త్వరలో కొత్త ప్రశ్నలు వస్తాయి.", v_empty: "త్వరలో కొత్త వీడియోలు వస్తాయి."
   },
   ta: {
+    tr_loading: "மொழிபெயர்ப்பு ஏற்றப்படுகிறது…", tr_pending: "இந்தக் கட்டுரையின் மொழிபெயர்ப்பு விரைவில் வரும். அதுவரை கீழே உள்ள பொத்தானில் படியுங்கள்.",
     nav_news: "செய்திகள்", nav_gyan: "தகவல்", nav_quiz: "வினாடி வினா", nav_video: "வீடியோ", nav_links: "இணையுங்கள்",
     search_ph: "செய்தி தேடுங்கள்…", all: "அனைத்தும்", latest: "சமீபத்திய செய்திகள்", search_prefix: "தேடல்: ",
     gyan_head: "பயனுள்ள தகவல்", did_you_know: "உங்களுக்குத் தெரியுமா?", quiz_head: "இன்றைய வினாடி வினா", video_head: "எங்கள் வீடியோக்கள்",
@@ -130,6 +136,7 @@ window.SB_STR = {
     q_share: "நண்பர்களுக்குச் சவால் விடுங்கள் (WhatsApp)", q_streak: "🔥 தொடர்ந்து {n} நாள்", q_empty: "விரைவில் புதிய கேள்விகள் வரும்.", v_empty: "விரைவில் புதிய வீடியோக்கள் வரும்."
   },
   gu: {
+    tr_loading: "અનુવાદ લોડ થઈ રહ્યો છે…", tr_pending: "આ લેખનો અનુવાદ જલદી આવશે. ત્યાં સુધી નીચેના બટનથી વાંચો.",
     nav_news: "સમાચાર", nav_gyan: "માહિતી", nav_quiz: "ક્વિઝ", nav_video: "વિડિયો", nav_links: "જોડાઓ",
     search_ph: "સમાચાર શોધો…", all: "બધા", latest: "તાજા સમાચાર", search_prefix: "શોધ: ",
     gyan_head: "ઉપયોગી માહિતી", did_you_know: "શું તમે જાણો છો?", quiz_head: "આજની ક્વિઝ", video_head: "અમારા વિડિયો",
@@ -149,6 +156,7 @@ window.SB_STR = {
     q_share: "મિત્રોને પડકાર આપો (WhatsApp)", q_streak: "🔥 સતત {n} દિવસ", q_empty: "જલદી નવા પ્રશ્નો આવશે.", v_empty: "જલદી નવા વિડિયો આવશે."
   },
   ur: {
+    tr_loading: "ترجمہ لوڈ ہو رہا ہے…", tr_pending: "اس مضمون کا ترجمہ جلد آئے گا۔ تب تک نیچے والے بٹن سے پڑھیں۔",
     nav_news: "خبریں", nav_gyan: "معلومات", nav_quiz: "کوئز", nav_video: "ویڈیو", nav_links: "جڑیں",
     search_ph: "خبر تلاش کریں…", all: "سب", latest: "تازہ خبریں", search_prefix: "تلاش: ",
     gyan_head: "مفید معلومات", did_you_know: "کیا آپ جانتے ہیں؟", quiz_head: "آج کا کوئز", video_head: "ہماری ویڈیوز",
@@ -168,6 +176,7 @@ window.SB_STR = {
     q_share: "دوستوں کو چیلنج دیں (WhatsApp)", q_streak: "🔥 مسلسل {n} دن", q_empty: "جلد ہی نئے سوال آئیں گے۔", v_empty: "جلد ہی نئی ویڈیوز آئیں گی۔"
   },
   kn: {
+    tr_loading: "ಅನುವಾದ ಲೋಡ್ ಆಗುತ್ತಿದೆ…", tr_pending: "ಈ ಲೇಖನದ ಅನುವಾದ ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ. ಅಲ್ಲಿಯವರೆಗೆ ಕೆಳಗಿನ ಬಟನ್ ಮೂಲಕ ಓದಿ.",
     nav_news: "ಸುದ್ದಿ", nav_gyan: "ಮಾಹಿತಿ", nav_quiz: "ರಸಪ್ರಶ್ನೆ", nav_video: "ವೀಡಿಯೊ", nav_links: "ಸೇರಿ",
     search_ph: "ಸುದ್ದಿ ಹುಡುಕಿ…", all: "ಎಲ್ಲಾ", latest: "ಇತ್ತೀಚಿನ ಸುದ್ದಿ", search_prefix: "ಹುಡುಕಾಟ: ",
     gyan_head: "ಉಪಯುಕ್ತ ಮಾಹಿತಿ", did_you_know: "ನಿಮಗೆ ಗೊತ್ತೇ?", quiz_head: "ಇಂದಿನ ರಸಪ್ರಶ್ನೆ", video_head: "ನಮ್ಮ ವೀಡಿಯೊಗಳು",
@@ -187,6 +196,7 @@ window.SB_STR = {
     q_share: "ಸ್ನೇಹಿತರಿಗೆ ಸವಾಲು ಹಾಕಿ (WhatsApp)", q_streak: "🔥 ಸತತ {n} ದಿನ", q_empty: "ಶೀಘ್ರದಲ್ಲೇ ಹೊಸ ಪ್ರಶ್ನೆಗಳು ಬರಲಿವೆ.", v_empty: "ಶೀಘ್ರದಲ್ಲೇ ಹೊಸ ವೀಡಿಯೊಗಳು ಬರಲಿವೆ."
   },
   or: {
+    tr_loading: "ଅନୁବାଦ ଲୋଡ୍ ହେଉଛି…", tr_pending: "ଏହି ଲେଖାର ଅନୁବାଦ ଶୀଘ୍ର ଆସିବ। ସେପର୍ଯ୍ୟନ୍ତ ତଳ ବଟନ୍‌ରେ ପଢ଼ନ୍ତୁ।",
     nav_news: "ଖବର", nav_gyan: "ସୂଚନା", nav_quiz: "କୁଇଜ୍", nav_video: "ଭିଡିଓ", nav_links: "ଯୋଡ଼ି ହୁଅନ୍ତୁ",
     search_ph: "ଖବର ଖୋଜନ୍ତୁ…", all: "ସବୁ", latest: "ତାଜା ଖବର", search_prefix: "ଖୋଜ: ",
     gyan_head: "ଉପଯୋଗୀ ସୂଚନା", did_you_know: "ଆପଣ ଜାଣନ୍ତି କି?", quiz_head: "ଆଜିର କୁଇଜ୍", video_head: "ଆମ ଭିଡିଓ",
@@ -206,6 +216,7 @@ window.SB_STR = {
     q_share: "ସାଙ୍ଗମାନଙ୍କୁ ଚ୍ୟାଲେଞ୍ଜ କରନ୍ତୁ (WhatsApp)", q_streak: "🔥 ଲଗାତାର {n} ଦିନ", q_empty: "ଶୀଘ୍ର ନୂଆ ପ୍ରଶ୍ନ ଆସିବ।", v_empty: "ଶୀଘ୍ର ନୂଆ ଭିଡିଓ ଆସିବ।"
   },
   ml: {
+    tr_loading: "വിവർത്തനം ലോഡ് ചെയ്യുന്നു…", tr_pending: "ഈ ലേഖനത്തിന്റെ വിവർത്തനം ഉടൻ വരും. അതുവരെ താഴെയുള്ള ബട്ടൺ വഴി വായിക്കൂ.",
     nav_news: "വാർത്ത", nav_gyan: "വിവരം", nav_quiz: "ക്വിസ്", nav_video: "വീഡിയോ", nav_links: "ചേരൂ",
     search_ph: "വാർത്ത തിരയൂ…", all: "എല്ലാം", latest: "പുതിയ വാർത്തകൾ", search_prefix: "തിരയൽ: ",
     gyan_head: "ഉപകാരപ്രദമായ വിവരങ്ങൾ", did_you_know: "നിങ്ങൾക്കറിയാമോ?", quiz_head: "ഇന്നത്തെ ക്വിസ്", video_head: "ഞങ്ങളുടെ വീഡിയോകൾ",
@@ -225,6 +236,7 @@ window.SB_STR = {
     q_share: "സുഹൃത്തുക്കളെ വെല്ലുവിളിക്കൂ (WhatsApp)", q_streak: "🔥 തുടർച്ചയായി {n} ദിവസം", q_empty: "ഉടൻ പുതിയ ചോദ്യങ്ങൾ വരും.", v_empty: "ഉടൻ പുതിയ വീഡിയോകൾ വരും."
   },
   pa: {
+    tr_loading: "ਅਨੁਵਾਦ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…", tr_pending: "ਇਸ ਲੇਖ ਦਾ ਅਨੁਵਾਦ ਜਲਦੀ ਆਵੇਗਾ। ਤਦ ਤੱਕ ਹੇਠਾਂ ਦਿੱਤੇ ਬਟਨ ਨਾਲ ਪੜ੍ਹੋ।",
     nav_news: "ਖ਼ਬਰਾਂ", nav_gyan: "ਜਾਣਕਾਰੀ", nav_quiz: "ਕੁਇਜ਼", nav_video: "ਵੀਡੀਓ", nav_links: "ਜੁੜੋ",
     search_ph: "ਖ਼ਬਰ ਖੋਜੋ…", all: "ਸਾਰੀਆਂ", latest: "ਤਾਜ਼ਾ ਖ਼ਬਰਾਂ", search_prefix: "ਖੋਜ: ",
     gyan_head: "ਕੰਮ ਦੀ ਜਾਣਕਾਰੀ", did_you_know: "ਕੀ ਤੁਸੀਂ ਜਾਣਦੇ ਹੋ?", quiz_head: "ਅੱਜ ਦਾ ਕੁਇਜ਼", video_head: "ਸਾਡੀਆਂ ਵੀਡੀਓ",

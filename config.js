@@ -13,6 +13,9 @@ window.SB_CONFIG = {
   // शेयर करते समय भेजा जाने वाला ऐप का लिंक (Play Store पर आने के बाद Play Store लिंक डालें)
   appShareUrl: "https://samjhobharatofficial1989-dev.github.io/",
 
+  // लेखों के अनुवाद की सेवा (Google Apps Script web app) — इसे न बदलें
+  trApi: "https://script.google.com/macros/s/AKfycbxNry7SeKWwhfJKICxDUzFDtfjgsu0MNLHS6UeGBpiT_54c2kQEorvxl7dlGAlhDj9rtg/exec",
+
   // रोज़ के क्विज़ में कितने सवाल
   quizPerDay: 5,
 
