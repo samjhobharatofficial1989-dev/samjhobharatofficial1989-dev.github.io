@@ -90,28 +90,36 @@ def rss_videos():
     return out
 
 
+def _jstr(x):
+    try:
+        return json.loads('"%s"' % x)
+    except Exception:
+        return x
+
+
 def page_videos():
-    """RSS न मिले तो चैनल के Videos और Shorts पेज से सूची निकालना (तारीख के बिना, पेज के क्रम में)."""
+    """RSS न मिले तो चैनल के Videos और Shorts पेज से सूची निकालना (पेज के क्रम में, नया ऊपर)."""
     out, seen = [], set()
-    now = datetime.now(timezone.utc)
-    for tab in ("videos", "shorts"):
+    for tab, marker, id_re, title_re in (
+        ("videos", '"lockupViewModel":{', r'"contentId":"([\w-]{11})","contentType":"LOCKUP_CONTENT_TYPE_VIDEO"',
+         r'"lockupMetadataViewModel":\{"title":\{"content":"((?:[^"\\]|\\.)*)"'),
+        ("shorts", '"shortsLockupViewModel":{', r'"videoId":"([\w-]{11})"', r'"primaryText":\{"content":"((?:[^"\\]|\\.)*)"'),
+    ):
         try:
-            html = get("https://www.youtube.com/channel/%s/%s?hl=hi" % (CHANNEL, tab)).decode("utf-8", "replace")
+            html = get("https://www.youtube.com/channel/%s/%s" % (CHANNEL, tab)).decode("utf-8", "replace")
         except Exception as ex:
             print("page %s failed: %s" % (tab, ex))
             continue
-        for m in re.finditer(r'"(?:videoRenderer|reelItemRenderer)":\{"videoId":"([\w-]{11})"', html):
-            vid = m.group(1)
-            if vid in seen:
+        found = 0
+        for chunk in html.split(marker)[1:]:
+            m = re.search(id_re, chunk)
+            if not m or m.group(1) in seen:
                 continue
-            seen.add(vid)
-            chunk = html[m.end():m.end() + 4000]
-            t = re.search(r'"(?:title|headline)":\{(?:"runs":\[\{"text"|"simpleText"):"((?:[^"\\]|\\.)*)"', chunk)
-            title = json.loads('"%s"' % t.group(1)) if t else ""
-            out.append({"id": vid, "title": title, "date": ""})
-    # पेज पर नया वीडियो ऊपर होता है; क्रम बनाए रखने के लिए अनुमानित समय डालें
-    for i, v in enumerate(out):
-        v["date"] = (now.replace(microsecond=0)).isoformat() if i == 0 else ""
+            t = re.search(title_re, chunk)
+            seen.add(m.group(1))
+            out.append({"id": m.group(1), "title": _jstr(t.group(1)) if t else "", "date": ""})
+            found += 1
+        print("page %s: %d" % (tab, found))
     return out
 
 
