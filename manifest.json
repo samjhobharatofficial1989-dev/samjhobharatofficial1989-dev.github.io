@@ -1,6 +1,6 @@
 {
-  "name": "समझो भारत",
-  "short_name": "समझो भारत",
+  "name": "Samjho Bharat",
+  "short_name": "Samjho Bharat",
   "description": "Latest news, government schemes, money calculators, tech and AI, politics and videos — in English, Hindi and 10 more Indian languages.",
   "id": "./",
   "start_url": "./?source=app",
@@ -19,8 +19,8 @@
     { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "खबरें", "url": "./?tab=news", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "वीडियो", "url": "./?tab=video", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "पैसे का हिसाब", "url": "./?tab=calc", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+    { "name": "News", "url": "./?tab=news", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Videos", "url": "./?tab=video", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Money Calculators", "url": "./?tab=calc", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }
