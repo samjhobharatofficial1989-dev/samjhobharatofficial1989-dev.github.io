@@ -1,6 +1,6 @@
 """समझो भारत: ब्लॉग की पोस्ट (ऑफ़लाइन/सूचना के लिए) और YouTube वीडियो की सूची बनाना।
 Builds data/feed.json (latest blog posts) and data/videos.json (latest channel videos)."""
-import json, os, re, sys, urllib.request
+import json, os, re, sys, time, urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
@@ -69,20 +69,66 @@ def build_feed():
     print("feed: %d posts" % len(posts))
 
 
-def build_videos():
-    xml = get("https://www.youtube.com/feeds/videos.xml?channel_id=" + CHANNEL)
+def rss_videos():
+    xml = None
+    for i in range(3):  # YouTube कभी-कभी पहली बार में जवाब नहीं देता
+        try:
+            xml = get("https://www.youtube.com/feeds/videos.xml?channel_id=" + CHANNEL)
+            break
+        except Exception as ex:
+            print("rss try %d failed: %s" % (i + 1, ex))
+            time.sleep(5)
+    if not xml:
+        return []
     ns = {"a": "http://www.w3.org/2005/Atom", "yt": "http://www.youtube.com/xml/schemas/2015"}
-    root = ET.fromstring(xml)
-    new = []
-    for en in root.findall("a:entry", ns):
+    out = []
+    for en in ET.fromstring(xml).findall("a:entry", ns):
         vid = en.findtext("yt:videoId", default="", namespaces=ns)
         if vid:
-            new.append({"id": vid, "title": en.findtext("a:title", default="", namespaces=ns),
+            out.append({"id": vid, "title": en.findtext("a:title", default="", namespaces=ns),
                         "date": en.findtext("a:published", default="", namespaces=ns)})
+    return out
+
+
+def page_videos():
+    """RSS न मिले तो चैनल के Videos और Shorts पेज से सूची निकालना (तारीख के बिना, पेज के क्रम में)."""
+    out, seen = [], set()
+    now = datetime.now(timezone.utc)
+    for tab in ("videos", "shorts"):
+        try:
+            html = get("https://www.youtube.com/channel/%s/%s?hl=hi" % (CHANNEL, tab)).decode("utf-8", "replace")
+        except Exception as ex:
+            print("page %s failed: %s" % (tab, ex))
+            continue
+        for m in re.finditer(r'"(?:videoRenderer|reelItemRenderer)":\{"videoId":"([\w-]{11})"', html):
+            vid = m.group(1)
+            if vid in seen:
+                continue
+            seen.add(vid)
+            chunk = html[m.end():m.end() + 4000]
+            t = re.search(r'"(?:title|headline)":\{(?:"runs":\[\{"text"|"simpleText"):"((?:[^"\\]|\\.)*)"', chunk)
+            title = json.loads('"%s"' % t.group(1)) if t else ""
+            out.append({"id": vid, "title": title, "date": ""})
+    # पेज पर नया वीडियो ऊपर होता है; क्रम बनाए रखने के लिए अनुमानित समय डालें
+    for i, v in enumerate(out):
+        v["date"] = (now.replace(microsecond=0)).isoformat() if i == 0 else ""
+    return out
+
+
+def build_videos():
+    new = rss_videos()
+    if not new:
+        new = page_videos()
+    if not new:
+        raise RuntimeError("no videos found from RSS or channel page")
     old = load("data/videos.json", {}).get("videos", [])
+    olddates = {v["id"]: v.get("date", "") for v in old}
+    for v in new:  # पुरानी पक्की तारीख हो तो वही रखें
+        if olddates.get(v["id"]):
+            v["date"] = olddates[v["id"]]
     ids = {v["id"] for v in new}
     merged = new + [v for v in old if v.get("id") not in ids]
-    merged.sort(key=lambda v: v.get("date", ""), reverse=True)
+    merged = sorted(merged, key=lambda v: v.get("date") or "0", reverse=True) if all(v.get("date") for v in new) else merged
     merged = merged[:MAX_VIDEOS]
     if merged == old:
         print("videos: no change")
@@ -99,6 +145,6 @@ if __name__ == "__main__":
             fn()
         except Exception as ex:  # एक हिस्सा फेल हो तो दूसरा फिर भी चले
             ok = False
-            print("ERROR in %s: %s" % (fn.__name__, ex), file=sys.stderr)
+            print("ERROR in %s: %s" % (fn.__name__, ex))
     if not ok:
         print("::warning::Some data could not be updated this time; the old copy is kept.")
