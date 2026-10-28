@@ -665,7 +665,51 @@
       var msg = sc === total ? T("q_m4") : sc >= total - 1 ? T("q_m3") : sc >= total / 2 ? T("q_m2") : T("q_m1");
       $("quizBox").innerHTML = '<div class="qresult"><div class="qscore">' + sc + " / " + total + "</div><h3>" + msg + "</h3>" +
         "<p>" + (already ? T("q_already") : T("q_done")) + " " + T("q_tomorrow") + "<br><small class='hint-en'>New questions every day.</small></p>" +
-        '<button class="btn btn-wa" id="qshare">' + T("q_share") + '</button></div>';
+        '<button class="btn btn-wa" id="qshare">' + T("q_share") + '</button>' +
+        '<div class="certbox"><h3>🏅 ' + esc(T("cert_head")) + '</h3><label class="cf"><span>' + esc(T("cert_name")) + '</span><input id="certName" type="text" maxlength="40" autocomplete="name" value="' +
+        esc((window.SBP.profile().name) || "") + '"></label><button class="btn" id="qcert" type="button">' + esc(T("cert_make")) + '</button><div id="certOut"></div></div></div>';
+    }
+    /* क्विज़ का प्रमाणपत्र (फ़ोन में ही बनता है, कहीं भेजा नहीं जाता) */
+    function makeCert() {
+      var d = store.get("sb_quiz_done") || { score: 0, total: 0, date: todayKey() };
+      var name = ($("certName").value || "").trim();
+      if (!name) { $("certName").focus(); return; }
+      var pr = window.SBP.profile(); pr.name = name; window.SBP.saveProfile(pr);
+      var st = streakInfo();
+      var W = 1600, H = 1130, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+      var x = cv.getContext("2d");
+      var draw = function () {
+        x.fillStyle = "#fffaf2"; x.fillRect(0, 0, W, H);
+        x.strokeStyle = "#0B2545"; x.lineWidth = 18; x.strokeRect(30, 30, W - 60, H - 60);
+        x.strokeStyle = "#FF9933"; x.lineWidth = 6; x.strokeRect(62, 62, W - 124, H - 124);
+        x.fillStyle = "#FF9933"; x.fillRect(62, 62, W - 124, 22); x.fillStyle = "#138808"; x.fillRect(62, H - 84, W - 124, 22);
+        x.textAlign = "center"; x.fillStyle = "#0B2545";
+        x.beginPath(); x.arc(W / 2, 190, 62, 0, 7); x.fillStyle = "#FF9933"; x.fill(); x.lineWidth = 6; x.strokeStyle = "#0B2545"; x.stroke();
+        x.fillStyle = "#0B2545"; x.font = "700 64px Mukta, sans-serif"; x.fillText(T("logo_letter"), W / 2, 212);
+        x.font = "700 46px Mukta, sans-serif"; x.fillText(T("brand"), W / 2, 310);
+        x.fillStyle = "#b45309"; x.font = "700 74px Mukta, sans-serif"; x.fillText(T("cert_title"), W / 2, 410);
+        x.fillStyle = "#334155"; x.font = "400 38px Mukta, sans-serif"; x.fillText(T("cert_line1"), W / 2, 490);
+        x.fillStyle = "#0B2545"; x.font = "700 86px Mukta, sans-serif"; x.fillText(name, W / 2, 600);
+        x.strokeStyle = "#FF9933"; x.lineWidth = 3; x.beginPath(); x.moveTo(W / 2 - 360, 630); x.lineTo(W / 2 + 360, 630); x.stroke();
+        x.fillStyle = "#334155"; x.font = "400 38px Mukta, sans-serif"; x.fillText(T("cert_line2"), W / 2, 700);
+        x.fillStyle = "#138808"; x.font = "700 92px Mukta, sans-serif"; x.fillText(d.score + " / " + d.total, W / 2, 810);
+        x.fillStyle = "#334155"; x.font = "400 34px Mukta, sans-serif";
+        x.fillText(T("cert_date") + ": " + fmtDate(d.date + "T12:00:00") + (st.count > 1 ? "   •   " + T("q_streak", st.count) : ""), W / 2, 880);
+        x.fillStyle = "#0B2545"; x.font = "700 40px Mukta, sans-serif"; x.fillText(T("tagline"), W / 2, 960);
+        x.fillStyle = "#64748b"; x.font = "400 26px Mukta, sans-serif"; x.fillText(T("cert_foot"), W / 2, 1010);
+        cv.toBlob(function (blob) {
+          var url = URL.createObjectURL(blob), fn = "SamjhoBharat-Quiz-" + d.date + ".png";
+          $("certOut").innerHTML = '<img class="certimg" alt="" src="' + url + '"><div class="onb-btns"><a class="btn" download="' + fn + '" href="' + url + '">⬇ ' + esc(T("cert_dl")) +
+            '</a><button class="btn btn-wa" type="button" id="certShare">📤 ' + esc(T("share_btn")) + "</button></div>";
+          $("certShare").onclick = function () {
+            var file = new File([blob], fn, { type: "image/png" });
+            var txt = T("share_quiz", d.score + "/" + d.total) + "\n" + T("tagline") + "\n📲 " + C.appShareUrl;
+            if (navigator.canShare && navigator.canShare({ files: [file] })) navigator.share({ files: [file], text: txt }).catch(function () {});
+            else doShare(T("brand"), txt);
+          };
+        }, "image/png");
+      };
+      if (document.fonts && document.fonts.load) Promise.all([document.fonts.load("700 40px Mukta"), document.fonts.load("400 40px Mukta")]).then(draw, draw); else draw();
     }
     function share() {
       var d = store.get("sb_quiz_done") || { score: 0, total: 0 };
@@ -675,6 +719,7 @@
       var o = ev.target.closest(".qopt"); if (o) { pick(+o.dataset.k); return; }
       if (ev.target.closest("#qnext")) { next(); return; }
       if (ev.target.closest("#qshare")) share();
+      if (ev.target.closest("#qcert")) makeCert();
     });
     return { start: start };
   })();

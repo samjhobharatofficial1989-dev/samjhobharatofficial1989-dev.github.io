@@ -114,6 +114,9 @@ window.SBP = (function () {
       my_note: "ऐप याद रखता है कि आपने क्या पढ़ा, कौन-सा टैब और कैलकुलेटर इस्तेमाल किया, ताकि अगली बार वहीं से शुरू हो। यह सब सिर्फ़ आपके फ़ोन में रहता है।",
       help_head: "📞 ज़रूरी हेल्पलाइन", help_note: "नंबर दबाते ही कॉल लगेगी।",
       h_cyber: "साइबर ठगी की शिकायत", h_emerg: "आपातकाल (पुलिस, एंबुलेंस, फ़ायर)", h_women: "महिला हेल्पलाइन", h_child: "चाइल्ड हेल्पलाइन",
+      cert_head: "अपना प्रमाणपत्र पाएँ", cert_name: "प्रमाणपत्र पर आपका नाम", cert_make: "प्रमाणपत्र बनाएँ", cert_dl: "डाउनलोड करें",
+      cert_title: "प्रमाणपत्र", cert_line1: "यह प्रमाणित किया जाता है कि", cert_line2: "ने समझो भारत का आज का GK क्विज़ खेलकर इतने अंक पाए",
+      cert_date: "तारीख़", cert_foot: "Samjho Bharat Daily Quiz • यह प्रोत्साहन प्रमाणपत्र है",
       h_elder: "बुज़ुर्गों की हेल्पलाइन (Elderline)", h_consumer: "उपभोक्ता हेल्पलाइन (NCH)", h_rail: "रेल मदद", h_amb: "एंबुलेंस", h_tele: "टेली-मानस (मानसिक स्वास्थ्य)"
     },
     en: {
@@ -129,6 +132,9 @@ window.SBP = (function () {
       my_note: "The app remembers what you read and which tab and calculator you used, so it opens where you left off. All of this stays on your phone.",
       help_head: "📞 Important helplines", help_note: "Tap a number to call.",
       h_cyber: "Cyber fraud complaint", h_emerg: "Emergency (police, ambulance, fire)", h_women: "Women helpline", h_child: "Child helpline",
+      cert_head: "Get your certificate", cert_name: "Your name on the certificate", cert_make: "Make certificate", cert_dl: "Download",
+      cert_title: "Certificate", cert_line1: "This is to certify that", cert_line2: "played today's Samjho Bharat GK quiz and scored",
+      cert_date: "Date", cert_foot: "Samjho Bharat Daily Quiz • Certificate of encouragement",
       h_elder: "Elderline (senior citizens)", h_consumer: "Consumer helpline (NCH)", h_rail: "Rail Madad", h_amb: "Ambulance", h_tele: "Tele-MANAS (mental health)"
     }
   };
