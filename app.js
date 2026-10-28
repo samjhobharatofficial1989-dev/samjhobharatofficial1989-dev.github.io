@@ -126,7 +126,7 @@
   }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
-  function renderList(el, posts, emptyMsg) {
+  var THEMES = [{ re: /पैसा|finance|निवेश|money|बैंक|टैक्स|tax/i, c: "money", i: "₹" }, { re: /cyber|साइबर/i, c: "cyber", i: "🛡️" }, { re: /technology|tech| ai /i, c: "tech", i: "💻" }, { re: /सरकारी|yojana|योजना|scheme/i, c: "govt", i: "🏛️" }, { re: /राजनीति|politic|चुनाव/i, c: "poli", i: "🗳️" }, { re: /रक्षा|defen|सेना/i, c: "def", i: "🎖️" }, { re: /इतिहास|history/i, c: "hist", i: "📜" }, { re: /काम की|जानकारी|health|स्वास्थ्य/i, c: "info", i: "💡" }]; function autoThumb(p, tp) { var src = " " + (p.labels || []).join(" ") + " " + p.title + " ", th = null; for (var k = 0; k < THEMES.length && !th; k++) if (THEMES[k].re.test(src)) th = THEMES[k]; th = th || { c: "news", i: "📰" }; var t = String(tp.title || ""), cut = t.indexOf(":"); var short = cut > 3 && cut < 40 ? t.slice(0, cut) : t; return '<div class="thumb auto at-' + th.c + '" aria-hidden="true"><b class="ai">' + th.i + '</b><span class="at">' + esc(short) + "</span></div>"; } function renderList(el, posts, emptyMsg) {
     if (!posts.length) {
       el.innerHTML = '<div class="empty">' + emptyMsg + '</div>';
       return;
@@ -138,7 +138,7 @@
       var xc = trCard(p);
       var img = xc ? cardHtml(xc, i === 0 ? "xcard-hero thumb" : "xcard-mini thumb")
         : p.img ? '<img class="thumb" loading="lazy" alt="" src="' + esc(p.img) + '">'
-        : '<div class="thumb ph"><span>' + esc(tp.labels[0] || T("brand")) + "</span></div>";
+        : autoThumb(p, tp);
       var star = isSaved(p) ? '<span class="star" aria-hidden="true">★</span>' : "";
       return '<button class="card' + (i === 0 && p.img ? " hero" : "") + '" data-id="' + esc(p.id) + '">' + img +
         '<div class="body"><h3>' + star + esc(tp.title) + '</h3><div class="meta">' + labels + fmtDate(p.date) + "</div></div></button>";
