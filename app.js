@@ -126,7 +126,7 @@
   }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
-  var THEMES = [{ re: /पैसा|finance|निवेश|money|बैंक|टैक्स|tax/i, c: "money", i: "₹" }, { re: /cyber|साइबर/i, c: "cyber", i: "🛡️" }, { re: /technology|tech| ai /i, c: "tech", i: "💻" }, { re: /सरकारी|yojana|योजना|scheme/i, c: "govt", i: "🏛️" }, { re: /राजनीति|politic|चुनाव/i, c: "poli", i: "🗳️" }, { re: /रक्षा|defen|सेना/i, c: "def", i: "🎖️" }, { re: /इतिहास|history/i, c: "hist", i: "📜" }, { re: /काम की|जानकारी|health|स्वास्थ्य/i, c: "info", i: "💡" }]; function autoThumb(p, tp) { var src = " " + (p.labels || []).join(" ") + " " + p.title + " ", th = null; for (var k = 0; k < THEMES.length && !th; k++) if (THEMES[k].re.test(src)) th = THEMES[k]; th = th || { c: "news", i: "📰" }; var t = String(tp.title || ""), cut = t.indexOf(":"); var short = cut > 3 && cut < 40 ? t.slice(0, cut) : t; return '<div class="thumb auto at-' + th.c + '" aria-hidden="true"><b class="ai">' + th.i + '</b><span class="at">' + esc(short) + "</span></div>"; } function renderList(el, posts, emptyMsg) {
+  function autoThumb(p, tp) { var th = window.SBP.theme(p); var t = String(tp.title || ""), cut = t.indexOf(":"); var short = cut > 3 && cut < 40 ? t.slice(0, cut) : t; return '<div class="thumb auto at-' + th.c + '" aria-hidden="true"><b class="ai">' + th.i + '</b><span class="at">' + esc(short) + "</span></div>"; } function renderList(el, posts, emptyMsg) {
     if (!posts.length) {
       el.innerHTML = '<div class="empty">' + emptyMsg + '</div>';
       return;
@@ -140,8 +140,10 @@
         : p.img ? '<img class="thumb" loading="lazy" alt="" src="' + esc(p.img) + '">'
         : autoThumb(p, tp);
       var star = isSaved(p) ? '<span class="star" aria-hidden="true">★</span>' : "";
-      return '<button class="card' + (i === 0 && p.img ? " hero" : "") + '" data-id="' + esc(p.id) + '">' + img +
-        '<div class="body"><h3>' + star + esc(tp.title) + '</h3><div class="meta">' + labels + fmtDate(p.date) + "</div></div></button>";
+      var rd = window.SBP.isRead(p);
+      return '<button class="card' + (i === 0 && p.img ? " hero" : "") + (rd ? " isread" : "") + '" data-id="' + esc(p.id) + '">' + img +
+        '<div class="body"><h3>' + star + esc(tp.title) + '</h3><div class="meta">' + labels + fmtDate(p.date) +
+        (rd ? ' <span class="rdmark">✓ ' + esc(T("read_mark")) + "</span>" : "") + "</div></div></button>";
     }).join("");
   }
   function skeleton(el) { el.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>'; }
@@ -193,7 +195,8 @@
   var curSec = "news";
   var newsFilter = null; // {q} = खोज
   function renderChips() {
-    var html = SECS.map(function (s) {
+    var html = '<button class="chip chip-fy' + (!newsFilter && curSec === "foryou" ? " on" : "") + '" data-sec="foryou">' + esc(T("sec_foryou")) + "</button>";
+    html += SECS.map(function (s) {
       return '<button class="chip' + (!newsFilter && curSec === s.key ? " on" : "") + '" data-sec="' + esc(s.key) + '">' + esc(T(s.name)) + "</button>";
     }).join("");
     html += '<button class="chip chip-saved' + (!newsFilter && curSec === "saved" ? " on" : "") + '" data-sec="saved">' + esc(T("sec_saved")) + "</button>";
@@ -228,11 +231,23 @@
     $("newsStatus").textContent = "";
     renderList($("newsList"), store.get("sb_saved") || [], T("saved_empty"));
   }
+  function showForYou() {
+    $("newsHeading").textContent = T("foryou_head");
+    $("newsStatus").textContent = "";
+    var list = window.SBP.forYou(offlinePool(), C.maxPosts);
+    renderList($("newsList"), list, T("no_news"));
+    $("newsList").insertAdjacentHTML("afterbegin", '<p class="small fynote">' + esc(T("foryou_note")) + "</p>");
+  }
+  function showCurrent() {
+    if (curSec === "saved") showSaved(); else if (curSec === "foryou") showForYou(); else loadSection(curSec);
+  }
   function openSection(key) {
     newsFilter = null; curSec = key;
     $("searchInput").value = "";
+    window.SBP.setChip(key);
     renderChips();
-    if (key === "saved") showSaved(); else loadSection(key);
+    showCurrent();
+    renderPersonal();
   }
   function showSearch(q) {
     var filter = { q: q };
@@ -286,13 +301,13 @@
   function loadAll() {
     var btn = $("refreshBtn");
     btn.classList.add("spin");
-    var first = newsFilter ? Promise.resolve() : curSec === "saved" ? Promise.resolve(showSaved()) : loadSection(curSec);
+    var first = newsFilter ? Promise.resolve() : curSec === "saved" ? Promise.resolve(showSaved()) : curSec === "foryou" ? Promise.resolve(showForYou()) : loadSection(curSec);
     Promise.all([first, loadGyan()]).then(function () {
       btn.classList.remove("spin");
       return SECS.reduce(function (p, s) {
         return p.then(function () { if (s.key !== curSec) return loadSection(s.key, true).catch(function () {}); });
       }, Promise.resolve());
-    }).then(prefetchOffline);
+    }).then(function () { if (curSec === "foryou" && !newsFilter && $("reader").hidden) showForYou(); prefetchOffline(); });
   }
   /* ऑफ़लाइन: हर सेक्शन की पहली तस्वीरें और (दूसरी भाषा हो तो) अनुवादित लेख पहले से ले आना */
   function prefetchOffline() {
@@ -381,8 +396,11 @@
       '<a class="btn btn-ghost" href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(T("read_blog")) + "</a>" +
       '<p class="slogan">' + esc(T("slogan")) + "</p>";
     updateSaveBtns();
+    window.SBP.track(p);
     $("reader").hidden = false;
     $("reader").scrollTop = 0;
+    var pr = window.SBP.progress();
+    if (pr && pr.id === p.id) setTimeout(function () { var r = $("reader"); r.scrollTop = pr.pct * (r.scrollHeight - r.clientHeight); }, 400);
     document.body.style.overflow = "hidden";
     if (push !== false) history.pushState({ reader: true }, "");
     if (tp.state === "done" && C.trApi && !trHtmlCache[lang + p.pid]) {
@@ -393,11 +411,21 @@
       }).catch(function () { if (current === p && $("postBody")) { $("postBody").innerHTML = cleanHtml(p.html); readLang = postLang; } });
     }
   }
+  function readPct() { var r = $("reader"); var h = r.scrollHeight - r.clientHeight; return h > 0 ? r.scrollTop / h : 1; }
+  var progT = null;
+  $("reader").addEventListener("scroll", function () {
+    if (!current) return; clearTimeout(progT);
+    var p = current; progT = setTimeout(function () { window.SBP.saveProgress(p, readPct()); }, 400);
+  });
   function closeReader() {
+    if (current) window.SBP.saveProgress(current, readPct());
     Speech.stop();
     $("reader").hidden = true;
     document.body.style.overflow = "";
     current = null;
+    renderPersonal();
+    if (curSec === "foryou" && !newsFilter) showForYou();
+    else { var n = curSec !== "saved" && store.get("sb_sec_" + curSec); if (n && n.posts && !newsFilter) renderList($("newsList"), n.posts, T("no_label")); }
   }
   document.addEventListener("click", function (ev) {
     var card = ev.target.closest(".card");
@@ -606,7 +634,7 @@
         '<div class="qprog"><span>' + T("q_label") + " " + (idx + 1) + " / " + qs.length + '</span><span>' + T("q_score") + ": " + score + '</span></div>' +
         '<div class="qbar"><i style="width:' + (idx / qs.length * 100) + '%"></i></div>' +
         '<h3 class="qtext">' + esc(q.q) + "</h3>" +
-        q.o.map(function (o, k) { return '<button class="qopt" data-k="' + k + '">' + esc(o.t) + "</button>"; }).join("") +
+        q.o.map(function (o, k) { var t = String(o.t); t = t.charAt(0).toUpperCase() + t.slice(1); return '<button class="qopt" data-k="' + k + '">' + esc(t) + "</button>"; }).join("") +
         '<div id="qexp"></div>';
     }
     function pick(k) {
@@ -736,6 +764,7 @@
     renderChips();
     if (newsFilter) showSearch(newsFilter.q);
     else if (curSec === "saved") showSaved();
+    else if (curSec === "foryou") showForYou();
     else { var n = store.get("sb_sec_" + curSec); if (n && n.posts) renderList($("newsList"), n.posts, T("no_label")); }
     var g = store.get("sb_gyan"); if (g && g.posts) renderList($("gyanList"), g.posts, T("gyan_empty"));
     if (videosLoaded) { videosLoaded = false; loadVideos(); }
@@ -757,6 +786,90 @@
     if (b || ev.target === $("langSheet")) $("langSheet").hidden = true;
   });
 
+  /* ---------- याद रखने वाले हिस्से का UI ---------- */
+  var STATES = ["अंडमान और निकोबार","आंध्र प्रदेश","अरुणाचल प्रदेश","असम","बिहार","चंडीगढ़","छत्तीसगढ़","दादरा नगर हवेली और दमन दीव","दिल्ली","गोवा","गुजरात","हरियाणा","हिमाचल प्रदेश","जम्मू-कश्मीर","झारखंड","कर्नाटक","केरल","लद्दाख","लक्षद्वीप","मध्य प्रदेश","महाराष्ट्र","मणिपुर","मेघालय","मिज़ोरम","नागालैंड","ओडिशा","पुडुचेरी","पंजाब","राजस्थान","सिक्किम","तमिलनाडु","तेलंगाना","त्रिपुरा","उत्तर प्रदेश","उत्तराखंड","पश्चिम बंगाल"];
+  var ROLES = ["job", "govt", "biz", "farmer", "student", "home", "senior"];
+  function renderPersonal() {
+    var box = $("personalBox");
+    if (!box) { $("chips").insertAdjacentHTML("beforebegin", '<div id="personalBox"></div>'); box = $("personalBox"); }
+    var html = "", pr = window.SBP.progress();
+    if (pr && pr.post) {
+      postsById[pr.post.id] = pr.post;
+      html += '<div class="contread"><button class="card cr-open" data-id="' + esc(pr.post.id) + '"><div class="body"><span class="small">📖 ' + esc(T("cont_read")) +
+        " · " + Math.round(pr.pct * 100) + '%</span><h3>' + esc(trPost(pr.post).title) + '</h3><div class="crbar"><i style="width:' + Math.round(pr.pct * 100) + '%"></i></div></div></button>' +
+        '<button class="crx" type="button" data-crx="1" aria-label="' + esc(T("cont_close")) + '">✕</button></div>';
+    }
+    if (!window.SBP.hasTaste() && window.SBP.onbDone()) html += '<div class="nbanner"><span>' + esc(T("taste_ask")) + '</span><span class="nbtns"><button class="btn btn-sm" type="button" data-onb="1">' + esc(T("taste_btn")) + "</button></span></div>";
+    box.innerHTML = html;
+  }
+  function renderHelplines() {
+    var H = [["1930", "h_cyber"], ["112", "h_emerg"], ["181", "h_women"], ["1098", "h_child"], ["14567", "h_elder"], ["1915", "h_consumer"], ["139", "h_rail"], ["108", "h_amb"], ["14416", "h_tele"]];
+    var html = '<div class="helpbox"><h3>' + esc(T("help_head")) + '</h3><p class="small">' + esc(T("help_note")) + '</p><div class="helpgrid">' +
+      H.map(function (h) { return '<a class="hl" href="tel:' + h[0] + '"><b>' + h[0] + "</b><span>" + esc(T(h[1])) + "</span></a>"; }).join("") + "</div></div>";
+    var g = $("tab-gyan"), old = $("helpBox");
+    if (old) old.outerHTML = '<div id="helpBox">' + html + "</div>";
+    else g.querySelector(".section-head").insertAdjacentHTML("beforebegin", '<div id="helpBox">' + html + "</div>");
+  }
+  function renderMyData() {
+    var html = "<h3>" + esc(T("my_head")) + '</h3><p class="small">' + esc(T("my_note")) + '</p><button class="btn btn-sm" type="button" data-onb="1">' + esc(T("my_edit")) +
+      '</button> <button class="btn btn-sm btn-ghost2" type="button" data-wipe="1">' + esc(T("my_wipe")) + '</button><p class="small" id="wipeMsg"></p>';
+    var b = $("myDataBox");
+    if (!b) { $("notifBox").insertAdjacentHTML("afterend", '<div id="myDataBox" class="about"></div>'); b = $("myDataBox"); }
+    b.innerHTML = html;
+  }
+  var Onb = (function () {
+    var sel = { roles: [], interests: [] };
+    function chip(group, key, label, on) { return '<button type="button" class="chip' + (on ? " on" : "") + '" data-og="' + group + '" data-ok="' + key + '">' + esc(label) + "</button>"; }
+    function open(askLang) {
+      var pr = window.SBP.profile();
+      sel = { roles: (pr.roles || []).slice(), interests: (pr.interests || []).slice(), gender: pr.gender || "", state: pr.state || "" };
+      var box = $("onbSheet");
+      if (!box) { document.body.insertAdjacentHTML("beforeend", '<div id="onbSheet" class="sheet onb"></div>'); box = $("onbSheet"); }
+      var h = '<div class="sheet-box onb-box" role="dialog"><h2>' + esc(T("onb_welcome")) + "</h2>";
+      if (askLang) {
+        h += "<h3>" + esc(T("onb_lang")) + '</h3><p class="hint-en small">Choose your language</p><div class="lang-list">' + window.SB_LANGS.map(function (l) {
+          return '<button type="button" class="lang-opt' + (l.code === I.get() ? " on" : "") + '" data-olang="' + l.code + '"' + (l.rtl ? ' dir="rtl"' : "") + ">" + esc(l.name) + "</button>";
+        }).join("") + "</div>";
+      } else {
+        h += '<p class="small">' + esc(T("onb_about")) + "</p>" +
+          "<h3>" + esc(T("onb_roles")) + '</h3><div class="chips wrap">' + ROLES.map(function (r) { return chip("roles", r, T("r_" + r), sel.roles.indexOf(r) >= 0); }).join("") + "</div>" +
+          "<h3>" + esc(T("onb_gender")) + '</h3><div class="chips wrap">' + ["f", "m", "x"].map(function (g) { return chip("gender", g, T("g_" + g), sel.gender === g); }).join("") + "</div>" +
+          "<h3>" + esc(T("onb_state")) + '</h3><select id="onbState" class="onbsel"><option value="">' + esc(T("st_none")) + "</option>" +
+          STATES.map(function (s) { return '<option' + (sel.state === s ? " selected" : "") + ">" + esc(s) + "</option>"; }).join("") + "</select>" +
+          "<h3>" + esc(T("onb_int")) + '</h3><div class="chips wrap">' + SECS.filter(function (s) { return s.key !== "news"; }).map(function (s) { return chip("interests", s.key, T(s.name), sel.interests.indexOf(s.key) >= 0); }).join("") + "</div>" +
+          '<p class="small">' + esc(T("onb_priv")) + '</p><div class="onb-btns"><button class="btn" type="button" data-ogo="1">' + esc(T("onb_go")) +
+          '</button><button class="btn btn-ghost2" type="button" data-oskip="1">' + esc(T("onb_skip")) + "</button></div>";
+      }
+      box.innerHTML = h + "</div>";
+      box.hidden = false;
+    }
+    function close() { var b = $("onbSheet"); if (b) b.hidden = true; window.SBP.setOnbDone(); renderPersonal(); }
+    document.addEventListener("click", function (ev) {
+      if (ev.target.closest("[data-onb]")) { open(false); return; }
+      if (ev.target.closest("[data-crx]")) { window.SBP.clearProgress(); renderPersonal(); return; }
+      if (ev.target.closest("[data-wipe]")) { window.SBP.wipe(); $("wipeMsg").textContent = T("my_wiped"); renderPersonal(); renderChips(); return; }
+      var lb = ev.target.closest("[data-olang]");
+      if (lb) { store.set("sb_lang_chosen", 1); if (lb.dataset.olang !== I.get()) { I.set(lb.dataset.olang); location.reload(); } else open(false); return; }
+      var c = ev.target.closest("[data-og]");
+      if (c && $("onbSheet") && !$("onbSheet").hidden) {
+        var g = c.dataset.og, k = c.dataset.ok;
+        if (g === "gender") { sel.gender = sel.gender === k ? "" : k; c.parentNode.querySelectorAll(".chip").forEach(function (x) { x.classList.toggle("on", x.dataset.ok === sel.gender); }); }
+        else { var a = sel[g], i = a.indexOf(k); if (i >= 0) a.splice(i, 1); else a.push(k); c.classList.toggle("on", i < 0); }
+        return;
+      }
+      if (ev.target.closest("[data-ogo]")) {
+        sel.state = ($("onbState") || {}).value || "";
+        window.SBP.saveProfile(sel); close();
+        if (window.SBP.hasTaste()) openSection("foryou");
+        return;
+      }
+      if (ev.target.closest("[data-oskip]")) close();
+    });
+    return { open: open };
+  })();
+  /* भाषा बटन से भाषा बदली तो भी "चुनी गई" मानें */
+  $("langSheet").addEventListener("click", function (ev) { if (ev.target.closest(".lang-opt")) store.set("sb_lang_chosen", 1); }, true);
+
   /* ---------- सूचना छूने पर सीधे वही लेख खोलना (?post=...) ---------- */
   function openFromLink(pid) {
     var find = function () { return offlinePool().filter(function (p) { return p.pid === pid; })[0]; };
@@ -767,12 +880,17 @@
 
   /* ---------- शुरुआत ---------- */
   var params = new URLSearchParams(location.search);
-  var startTab = params.get("tab") || "news";
+  /* पिछली बार जहाँ छोड़ा था, वहीं से (अगर लिंक में कुछ और न कहा हो) */
+  var startTab = params.get("tab") || store.get("sb_tab") || "news";
   if (TABS.indexOf(startTab) < 0) startTab = "news";
-  var startSec = params.get("sec");
-  if (startSec && (secByKey(startSec) || startSec === "saved")) curSec = startSec;
+  var startSec = params.get("sec") || window.SBP.lastChip() || (window.SBP.hasTaste() ? "foryou" : null);
+  if (startSec && (secByKey(startSec) || startSec === "saved" || startSec === "foryou")) curSec = startSec;
   renderChips();
   showTab(startTab);
+  renderPersonal();
+  renderHelplines();
+  renderMyData();
+  if (!window.SBP.onbDone() && !params.get("post")) Onb.open(!store.get("sb_lang_chosen") && !localStorage.getItem("sb_lang"));
   loadFeedJson();
   loadAll();
   loadTr();

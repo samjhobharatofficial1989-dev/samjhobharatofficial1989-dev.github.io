@@ -3,7 +3,9 @@
 window.SB_CALC = (function () {
   "use strict";
   var D; // app से मिलने वाली चीज़ें: T, esc, speak, share, cfg, box
-  var cur = "si";
+  var MEM = (function () { try { return JSON.parse(localStorage.getItem("sb_calc_last")) || {}; } catch (e) { return {}; } })();
+  function memSave() { try { localStorage.setItem("sb_calc_last", JSON.stringify(MEM)); } catch (e) {} }
+  var cur = MEM.cur || "si";
   var LIST = ["si", "ci", "emi", "gold"];
 
   function money(x) {
@@ -119,17 +121,26 @@ window.SB_CALC = (function () {
       '<button class="btn" type="submit">' + D.esc(T("btn_calc")) + "</button></form>" +
       '<p class="small">' + D.esc(T("example_note")) + "</p>" +
       '<div id="c_out" class="cout" hidden></div></div>';
+    var v = MEM[cur]; /* पिछली बार भरे गए अंक वापस */
+    if (v) Object.keys(v).forEach(function (id) { var el = document.getElementById(id); if (!el) return; if (el.type === "checkbox") el.checked = v[id]; else el.value = v[id]; });
+    var ib = document.getElementById("c_infl_box"), ic = document.getElementById("c_infl"); if (ib && ic) ib.hidden = !ic.checked;
     calc();
+    remember();
+  }
+  function remember() {
+    var f = document.getElementById("c_form"); if (!f) return; var v = {};
+    f.querySelectorAll("input,select").forEach(function (el) { if (el.id) v[el.id] = el.type === "checkbox" ? el.checked : el.value; });
+    MEM[cur] = v; MEM.cur = cur; memSave();
   }
   function init(deps) {
     D = deps;
     D.box.addEventListener("click", function (ev) {
       var c = ev.target.closest("[data-calc]");
-      if (c) { D.stop(); cur = c.dataset.calc; render(); return; }
+      if (c) { D.stop(); cur = c.dataset.calc; MEM.cur = cur; memSave(); render(); return; }
       if (ev.target.closest("[data-say]")) { D.speak(D.T(cur + "_name") + ". " + D.T(cur + "_about"), ev.target.closest("[data-say]")); return; }
       if (ev.target.closest("#c_share")) D.share(D.T("calc_head"), lastShare);
     });
-    D.box.addEventListener("submit", function (ev) { ev.preventDefault(); calc(); });
+    D.box.addEventListener("submit", function (ev) { ev.preventDefault(); calc(); remember(); });
     D.box.addEventListener("change", function (ev) {
       if (ev.target.id === "c_infl") document.getElementById("c_infl_box").hidden = !ev.target.checked;
     });

@@ -237,3 +237,24 @@ html:not([lang=hi]) .hint-en{display:none}
 .crres.big b{font-size:22px;color:var(--saffron)}
 .cverdict{margin:10px 0;background:rgba(19,136,8,.12);color:var(--text);border-radius:10px;padding:10px 12px;font-weight:700}
 .cerr{color:#D93025;font-weight:700}
+
+/* याद रखने वाला हिस्सा */
+.chip-fy{border-color:var(--saffron)}
+.card.isread{opacity:.72}
+.rdmark{color:#198754;font-size:12px;font-weight:700;white-space:nowrap}
+.fynote{margin:0 0 4px}
+.contread{position:relative;margin:0 0 12px}
+.contread .card{border-left:5px solid var(--saffron)}
+.contread h3{font-size:15.5px}
+.crbar{height:5px;background:var(--line);border-radius:4px;margin-top:6px;overflow:hidden}.crbar i{display:block;height:100%;background:var(--saffron)}
+.crx{position:absolute;top:6px;right:8px;border:0;background:transparent;font-size:16px;color:var(--muted);cursor:pointer;padding:6px}
+.helpbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 0 14px;box-shadow:var(--shadow)}
+.helpbox h3{margin:0 0 2px}
+.helpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:8px}
+.hl{display:flex;flex-direction:column;gap:2px;padding:9px 10px;border-radius:10px;background:var(--chip);text-decoration:none;color:var(--text)}
+.hl b{font-size:19px;color:#b42318}.hl span{font-size:12.5px;line-height:1.25}
+.onb .onb-box{max-height:88vh;overflow:auto}
+.onb h2{margin:0 0 6px;font-size:21px}.onb h3{margin:14px 0 6px;font-size:15.5px}
+.chips.wrap{flex-wrap:wrap;overflow:visible}
+.onbsel{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);font:inherit;background:var(--card);color:var(--text)}
+.onb-btns{display:flex;gap:10px;margin-top:12px}
