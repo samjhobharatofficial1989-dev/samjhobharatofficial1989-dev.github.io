@@ -394,6 +394,7 @@
       '<a class="btn btn-cm" href="' + esc(p.url.split("#")[0] + "#comments") + '" target="_blank" rel="noopener">' + esc(T("comment_btn")) + "</a>" +
       '<p class="small">' + esc(T("comment_note")) + "</p></div>" +
       '<button class="btn btn-wa" type="button" id="shareBtn2">📤 ' + esc(T("share_btn")) + "</button>" +
+      '<button class="btn btn-card" type="button" id="cardBtn2">🖼️ ' + esc(T("card_btn")) + "</button>" +
       '<a class="btn btn-ghost" href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(T("read_blog")) + "</a>" +
       '<p class="slogan">' + esc(T("slogan")) + "</p>";
     updateSaveBtns();
@@ -439,6 +440,11 @@
     }
     if (ev.target.closest("#saveBtn2")) { toggleSave(); return; }
     if (ev.target.closest("#shareBtn2")) { sharePost(); return; }
+    if (ev.target.closest("#cardBtn2") && current && window.SB_CARD) {
+      var tp2 = trPost(current);
+      window.SB_CARD.open(current, tp2.title, $("postBody").innerHTML, (tp2.labels || []).filter(function (l) { return l && l !== C.gyanLabel; })[0] || "", shareText(tp2.title, current.url));
+      return;
+    }
   });
   $("readerBack").addEventListener("click", function () { history.back(); });
   window.addEventListener("popstate", function () { if (!$("reader").hidden) closeReader(); });
@@ -601,19 +607,43 @@
     function dayNum(key) { return Math.floor(Date.parse(key + "T00:00:00Z") / 86400000); }
     function rng(seed) { return function () { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }; }
     function shuffle(arr, r) { arr = arr.slice(); for (var i = arr.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)); var t = arr[i]; arr[i] = arr[j]; arr[j] = t; } return arr; }
-    function todaysQuestions() {
-      var n = Math.min(C.quizPerDay || 5, bank.length);
-      if (!n) return [];
-      var d = dayNum(todayKey());
-      var perCycle = Math.floor(bank.length / n) || 1;
+    /* बड़ों वाले सवाल (quiz2.js): हिंदी/मराठी पढ़ने वालों को हिंदी, बाकी को English */
+    function adultBank() {
+      var hi = I.get() === "hi" || I.get() === "mr";
+      return (window.SB_QUIZ2 || []).map(function (q) { return { q: hi ? q.q : q.qe, o: hi ? q.o : q.oe, a: q.a, e: hi ? q.e : q.ee, c: q.c }; });
+    }
+    function pickDay(list, n, salt, d) {
+      if (!n || !list.length) return [];
+      var perCycle = Math.floor(list.length / n) || 1;
       var cycle = Math.floor(d / perCycle), pos = d % perCycle;
-      var order = shuffle(bank.map(function (_, i) { return i; }), rng(cycle + 7));
-      var r = rng(d + 99);
-      return order.slice(pos * n, pos * n + n).map(function (i) {
-        var q = bank[i];
-        var opts = shuffle(q.o.map(function (t, k) { return { t: t, ok: k === q.a }; }), r);
-        return { q: q.q, o: opts, e: q.e };
-      });
+      var order = shuffle(list.map(function (_, i) { return i; }), rng(cycle + salt));
+      return order.slice(pos * n, pos * n + n).map(function (i) { return list[i]; });
+    }
+    function prep(list, r) {
+      return list.map(function (q) { return { q: q.q, o: shuffle(q.o.map(function (t, k) { return { t: t, ok: k === q.a }; }), r), e: q.e }; });
+    }
+    /* आज के 5 सवाल: 4 बड़ों वाले (पैसा, कानून, योजनाएँ, संविधान, साइबर) + 1 सामान्य ज्ञान */
+    function todaysQuestions() {
+      var n = C.quizPerDay || 5, d = dayNum(todayKey()), ad = adultBank();
+      var nAd = ad.length ? Math.min(n - 1, ad.length) : 0;
+      var list = pickDay(ad, nAd, 31, d).concat(pickDay(bank, n - nAd, 7, d));
+      return prep(list, rng(d + 99));
+    }
+    var mode = "day";
+    function renderCats() {
+      var box = $("quizCats"); if (!box) return;
+      box.innerHTML = ["day"].concat(window.SB_QUIZ2_CATS || []).map(function (c) {
+        return '<button type="button" class="chip' + (mode === c ? " on" : "") + '" data-qcat="' + c + '">' + esc(T("qc_" + c)) + "</button>";
+      }).join("");
+    }
+    function startCat(c) {
+      mode = c; store.set("sb_quiz_cat", c); renderCats();
+      var list = adultBank().filter(function (q) { return q.c === c; });
+      var r = rng(Date.now() % 2147483647);
+      qs = prep(shuffle(list, r).slice(0, 5), r); idx = 0; score = 0;
+      if (!qs.length) { $("quizBox").innerHTML = '<div class="empty">' + T("q_empty") + "</div>"; return; }
+      ask();
+      $("quizBox").insertAdjacentHTML("afterbegin", '<p class="small">' + esc(T("q_cat_note")) + "</p>");
     }
     function streakInfo() { return store.get("sb_quiz_streak") || { last: "", count: 0 }; }
     function showStreak() {
@@ -621,6 +651,7 @@
       $("quizStreak").textContent = s.count ? T("q_streak", s.count) : "";
     }
     function start() {
+      mode = "day"; renderCats();
       useBank();
       showStreak();
       var done = store.get("sb_quiz_done");
@@ -655,6 +686,7 @@
     function next() {
       idx++;
       if (idx < qs.length) { ask(); window.scrollTo(0, 0); return; }
+      if (mode !== "day") { pracResult(); return; }
       var t = todayKey(), s = streakInfo();
       var y = new Date(Date.parse(t + "T00:00:00Z") - 86400000).toISOString().slice(0, 10);
       if (s.last !== t) { s.count = s.last === y ? s.count + 1 : 1; s.last = t; store.set("sb_quiz_streak", s); }
@@ -669,6 +701,12 @@
         '<button class="btn btn-wa" id="qshare">' + T("q_share") + '</button>' +
         '<div class="certbox"><h3>🏅 ' + esc(T("cert_head")) + '</h3><label class="cf"><span>' + esc(T("cert_name")) + '</span><input id="certName" type="text" maxlength="40" autocomplete="name" value="' +
         esc((window.SBP.profile().name) || "") + '"></label><button class="btn" id="qcert" type="button">' + esc(T("cert_make")) + '</button><div id="certOut"></div></div></div>';
+    }
+    function pracResult() {
+      var total = qs.length, msg = score === total ? T("q_m4") : score >= total - 1 ? T("q_m3") : score >= total / 2 ? T("q_m2") : "";
+      $("quizBox").innerHTML = '<div class="qresult"><div class="qscore">' + score + " / " + total + "</div><h3>" + msg + "</h3><p>" + esc(T("q_prac_done")) + "</p>" +
+        '<button class="btn" type="button" data-qcat="' + mode + '">🔁 ' + esc(T("q_again")) + '</button> <button class="btn btn-ghost2" type="button" data-qcat="day">' + esc(T("qc_day")) + "</button>" +
+        '<button class="btn btn-wa" type="button" id="qpshare">' + T("q_share") + "</button></div>";
     }
     /* क्विज़ का प्रमाणपत्र (फ़ोन में ही बनता है, कहीं भेजा नहीं जाता) */
     function makeCert() {
@@ -720,7 +758,13 @@
       var o = ev.target.closest(".qopt"); if (o) { pick(+o.dataset.k); return; }
       if (ev.target.closest("#qnext")) { next(); return; }
       if (ev.target.closest("#qshare")) share();
+      if (ev.target.closest("#qpshare")) doShare(T("brand") + " — " + T("nav_quiz"), shareText(T("q_prac_share", T("qc_" + mode)) + " " + score + "/" + qs.length, ""));
       if (ev.target.closest("#qcert")) makeCert();
+    });
+    document.addEventListener("click", function (ev) {
+      var c = ev.target.closest("[data-qcat]"); if (!c) return;
+      if (c.dataset.qcat === "day") { store.set("sb_quiz_cat", "day"); start(); } else startCat(c.dataset.qcat);
+      window.scrollTo(0, 0);
     });
     return { start: start };
   })();

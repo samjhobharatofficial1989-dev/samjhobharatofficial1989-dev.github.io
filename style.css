@@ -301,3 +301,8 @@ html:not([lang=hi]) .hint-en{display:none}
 .dt-form{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}.dt-form input{flex:1 1 160px;min-width:0;padding:9px;border:1px solid var(--line);border-radius:8px;font:inherit;background:var(--card);color:var(--text)}
 .nbanner.rem{border-color:#b42318}
 @media (prefers-color-scheme:dark){.t5 li.t5-care,.sc-first{background:#3a1515;border-color:#6b2a2a}.t5 li.t5-care button,.sc-first li{color:#ffd9d9}.sc-first h3{color:#ff9d9d}}
+
+/* चरण 5 */
+.btn-card{background:var(--navy);margin-top:10px}
+.cardbox{max-width:460px}.cardbox .certimg{width:100%;border-radius:10px;margin:8px 0}
+#quizCats{margin:0 0 10px;flex-wrap:wrap}

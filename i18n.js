@@ -280,7 +280,7 @@ window.SB_I18N = (function () {
   var lang = saved();
   if (!window.SB_STR[lang]) lang = guess();
   function t(k, n) {
-    var s = (window.SB_STR[lang] && window.SB_STR[lang][k]) || window.SB_STR.hi[k] || k;
+    var s = (window.SB_STR[lang] && window.SB_STR[lang][k]) || (lang !== "hi" && lang !== "mr" && window.SB_STR.en[k]) || window.SB_STR.hi[k] || k; // न मिले तो: हिंदी-मराठी के लिए हिंदी, बाकी के लिए English
     return n === undefined ? s : s.replace("{n}", n);
   }
   function info(code) { return window.SB_LANGS.filter(function (l) { return l.code === code; })[0] || window.SB_LANGS[0]; }
