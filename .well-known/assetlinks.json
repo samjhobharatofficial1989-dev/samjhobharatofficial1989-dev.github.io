@@ -5,7 +5,8 @@
         "package_name": "in.samjhobharat.app",
         "sha256_cert_fingerprints": [
           "57:AB:DC:49:F3:4A:54:F0:2F:E9:13:60:0B:CE:EC:9D:93:D2:9D:B7:07:C6:96:04:27:9F:CF:C6:96:58:E2:CA",
-          "9F:48:1D:AD:CB:04:65:E6:E3:2E:4F:53:FB:51:2B:DA:8F:FC:FC:17:5F:40:CC:39:A5:DA:EC:EC:21:F0:89:39"
+          "9F:48:1D:AD:CB:04:65:E6:E3:2E:4F:53:FB:51:2B:DA:8F:FC:FC:17:5F:40:CC:39:A5:DA:EC:EC:21:F0:89:39",
+              "E4:1A:01:B3:D9:6F:12:2E:E7:70:35:13:53:5C:31:E8:AA:A7:23:2A:AC:1D:06:A5:CB:1A:24:DA:9B:9D:E2:96"
         ]
       }
     }]
