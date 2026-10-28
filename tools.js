@@ -195,21 +195,26 @@
 
   /* ---------- "जानकारी" टैब में औज़ारों के बटन ---------- */
   function renderTools() {
-    var html = '<div class="toolgrid">' +
-      '<button class="tool" type="button" data-tool="yojana"><b>🏛️</b><span>' + esc(T("tool_yojana")) + "</span><small>" + esc(T("tool_yojana_s")) + "</small></button>" +
-      '<button class="tool" type="button" data-tool="docs"><b>📄</b><span>' + esc(T("tool_docs")) + "</span><small>" + esc(T("tool_docs_s")) + "</small></button>" +
-      '<button class="tool" type="button" data-tool="women"><b>👩</b><span>' + esc(T("tool_women")) + "</span><small>" + esc(T("tool_women_s")) + "</small></button></div>";
+    var L = [["yojana", "🏛️"], ["scam", "🚨"], ["dates", "📅"], ["guides", "🧭"], ["docs", "📄"], ["women", "👩"]];
+    var html = '<div class="toolgrid">' + L.map(function (x) {
+      return '<button class="tool" type="button" data-tool="' + x[0] + '"><b>' + x[1] + "</b><span>" + esc(T("tool_" + x[0])) + "</span><small>" + esc(T("tool_" + x[0] + "_s")) + "</small></button>";
+    }).join("") + "</div>";
     var g = $("tab-gyan"), old = $("toolBox");
     if (old) old.innerHTML = html; else g.insertAdjacentHTML("afterbegin", '<div id="toolBox">' + html + "</div>");
+  }
+  function openTool(k) {
+    var P4 = window.SB_P4;
+    if (k === "yojana") openFinder(); else if (k === "docs") openDocs(); else if (k === "women") openWomen();
+    else if (P4 && P4.open) P4.open(k);
   }
   document.addEventListener("click", function (ev) {
     var b = ev.target.closest("[data-tool]"); if (!b) return;
     var k = b.dataset.tool;
     try { localStorage.setItem("sb_last_tool", k); } catch (e) {}
-    if (k === "yojana") openFinder(); else if (k === "docs") openDocs(); else openWomen();
+    openTool(k);
   });
   renderTools();
   var q = new URLSearchParams(location.search).get("tool");
-  if (q === "yojana") openFinder(); else if (q === "docs") openDocs(); else if (q === "women") openWomen();
-  window.SB_TOOLS = { openFinder: openFinder, openDocs: openDocs, openWomen: openWomen, render: renderTools };
+  if (q === "yojana" || q === "docs" || q === "women") openTool(q); // बाकी (scam, dates, guides) phase4.js खोलता है
+  window.SB_TOOLS = { openFinder: openFinder, openDocs: openDocs, openWomen: openWomen, render: renderTools, panel: panel, load: load, esc: esc, open: openTool };
 })();

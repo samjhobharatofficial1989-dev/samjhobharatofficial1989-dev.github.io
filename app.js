@@ -189,7 +189,7 @@
   var feedJson = null; // GitHub पर हर आधे घंटे बनने वाली ऑफ़लाइन कॉपी (data/feed.json)
   function loadFeedJson() {
     return fetch("data/feed.json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) { feedJson = d; return d; }).catch(function () { return null; });
+      .then(function (d) { feedJson = d; document.dispatchEvent(new Event("sb:news")); return d; }).catch(function () { return null; });
   }
 
   var curSec = "news";
@@ -213,6 +213,7 @@
     }
     return fetchSection(sec).then(function (posts) {
       store.set("sb_sec_" + key, { at: Date.now(), posts: posts });
+      if (key === "news") document.dispatchEvent(new Event("sb:news"));
       if (show()) { renderList($("newsList"), posts, key === "news" ? T("no_news") : T("no_label")); $("newsStatus").textContent = ""; }
       return posts;
     }).catch(function () {
@@ -942,6 +943,9 @@
   Notify.render();
   if (params.get("post")) openFromLink(params.get("post"));
   window.addEventListener("online", function () { loadAll(); });
+  /* चरण 4 (phase4.js) के लिए: ताज़ा खबरें और लेख खोलने का रास्ता */
+  window.SBA = { pool: offlinePool, open: function (p) { postsById[p.id] = p; openPost(p); }, tr: trPost, feedReady: loadFeedJson };
+  document.dispatchEvent(new Event("sb:ready"));
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
