@@ -6,7 +6,8 @@ window.SB_CALC = (function () {
   var MEM = (function () { try { return JSON.parse(localStorage.getItem("sb_calc_last")) || {}; } catch (e) { return {}; } })();
   function memSave() { try { localStorage.setItem("sb_calc_last", JSON.stringify(MEM)); } catch (e) {} }
   var cur = MEM.cur || "si";
-  var LIST = ["si", "ci", "emi", "gold"];
+  var EXT = window.SB_CALC_EXT || {};
+  var LIST = ["si", "ci", "emi", "gold"].concat(Object.keys(EXT));
 
   function money(x) {
     if (!isFinite(x)) return "—";
@@ -27,6 +28,7 @@ window.SB_CALC = (function () {
   }
   function formHtml(k) {
     var T = D.T, h = "";
+    if (EXT[k]) return EXT[k].form({ T: T, esc: D.esc, field: field }) + (EXT[k].infl === false ? "" : inflBlock());
     if (k === "si") {
       h = field("c_p", T("f_amount"), 100000) + field("c_r", T("f_rate"), 10, "0.01") + field("c_t", T("f_years"), 3, "0.5");
     } else if (k === "ci") {
@@ -48,7 +50,26 @@ window.SB_CALC = (function () {
     return '<div class="crres' + (big ? " big" : "") + '"><span>' + D.esc(label) + "</span><b>" + D.esc(value) + "</b></div>";
   }
   var lastShare = "";
+  function calcExt() {
+    var T = D.T, X = EXT[cur], inflEl = document.getElementById("c_infl");
+    var useInfl = inflEl && inflEl.checked, ir = num("c_ir") / 100;
+    var res = X.run({ T: T, n: num, el: function (id) { return document.getElementById(id); } });
+    if (!res) { show('<p class="cerr">' + D.esc(T("invalid")) + "</p>"); return; }
+    if (res.err) { show('<p class="cerr">' + D.esc(res.err) + "</p>"); return; }
+    var out = "", share = [T(cur + "_name")];
+    res.rows.forEach(function (r) { out += row(r[0], r[1], !!r[2]); share.push(r[0] + ": " + r[1]); });
+    if (res.verdict) { out += '<div class="cverdict">' + D.esc(res.verdict) + "</div>"; share.push(res.verdict); }
+    if (useInfl && ir >= 0 && res.total && res.years) {
+      var real = res.total / Math.pow(1 + ir, res.years);
+      out += row(T("r_real"), money(real)) + '<p class="small">' + D.esc(T("r_real_note", +(ir * 100).toFixed(2))) + "</p>";
+      share.push(T("r_real") + ": " + money(real));
+    }
+    if (res.note) out += '<p class="small">' + D.esc(res.note) + "</p>";
+    lastShare = share.join("\n");
+    show(out + '<button class="btn btn-wa" id="c_share" type="button">📤 ' + D.esc(T("share_btn")) + "</button>");
+  }
   function calc() {
+    if (EXT[cur]) { calcExt(); return; }
     var T = D.T, out = "", share = [];
     var useInfl = document.getElementById("c_infl").checked;
     var ir = num("c_ir") / 100;
@@ -143,6 +164,7 @@ window.SB_CALC = (function () {
     D.box.addEventListener("submit", function (ev) { ev.preventDefault(); calc(); remember(); });
     D.box.addEventListener("change", function (ev) {
       if (ev.target.id === "c_infl") document.getElementById("c_infl_box").hidden = !ev.target.checked;
+      if (EXT[cur]) { calc(); remember(); }
     });
     render();
   }

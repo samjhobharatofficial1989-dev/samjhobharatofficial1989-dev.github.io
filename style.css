@@ -259,3 +259,4 @@ html:not([lang=hi]) .hint-en{display:none}
 .onbsel{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);font:inherit;background:var(--card);color:var(--text)}
 .onb-btns{display:flex;gap:10px;margin-top:12px}
 .certbox{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line);text-align:start}.certimg{width:100%;border-radius:10px;margin:10px 0;box-shadow:var(--shadow)}
+.chips.ctabs{flex-wrap:wrap;overflow:visible}
