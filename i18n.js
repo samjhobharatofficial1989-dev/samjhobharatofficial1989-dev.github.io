@@ -37,7 +37,7 @@ window.SB_STR = {
     q_share: "दोस्तों को चुनौती दें (WhatsApp)", q_streak: "🔥 लगातार {n} दिन", q_empty: "जल्द ही नए सवाल आएँगे।", v_empty: "जल्द ही नए वीडियो आएँगे।"
   },
   en: {
-    brand: "Samjho Bharat", logo_letter: "S", tagline: "Understand Bharat, take Bharat forward.", slogan: "Understand the nation, with Samjho Bharat.", share_app: "Download the app:", share_quiz: "I played today's Samjho Bharat GK quiz and scored {n}! 🇮🇳\nCan you beat me?",
+    brand: "Samjho Bharat", logo_letter: "S", tagline: "Understand Bharat, Move Bharat Forward.", slogan: "Understand the nation, with Samjho Bharat.", share_app: "Download the app:", share_quiz: "I played today's Samjho Bharat GK quiz and scored {n}! 🇮🇳\nCan you beat me?",
     tr_loading: "Loading translation…", tr_pending: "The translation of this article is coming soon. Until then, use the button below.",
     nav_news: "News", nav_gyan: "Info", nav_quiz: "Quiz", nav_video: "Videos", nav_links: "Connect",
     search_ph: "Search news…", all: "All", latest: "Latest news", search_prefix: "Search: ",
