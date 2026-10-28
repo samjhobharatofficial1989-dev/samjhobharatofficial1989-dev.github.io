@@ -1,5 +1,5 @@
 """समझो भारत: ब्लॉग की पोस्ट (ऑफ़लाइन/सूचना के लिए) और YouTube वीडियो की सूची बनाना।
-Builds data/feed.json (latest blog posts) and data/videos.json (latest channel videos)."""
+Builds data/feed.json (latest blog posts), data/videos.json (latest channel videos) and data/headlines.json (top news headlines)."""
 import json, os, re, sys, time, urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
@@ -145,10 +145,78 @@ def build_videos():
     print("videos: %d" % len(merged))
 
 
+# बड़ी न्यूज़ वेबसाइटों की सुर्खियाँ: सिर्फ़ हेडलाइन + स्रोत + लिंक (पूरी खबर उसी वेबसाइट पर खुलती है)
+HEADLINE_SOURCES = [
+    ("Aaj Tak", "hi", "https://www.aajtak.in/rssfeeds/?id=home"),
+    ("BBC Hindi", "hi", "https://feeds.bbci.co.uk/hindi/rss.xml"),
+    ("Amar Ujala", "hi", "https://www.amarujala.com/rss/breaking-news.xml"),
+    ("Dainik Bhaskar", "hi", "https://www.bhaskar.com/rss-v1--category-1061.xml"),
+    ("ABP Live", "hi", "https://www.abplive.com/home/feed"),
+    ("NDTV", "en", "https://feeds.feedburner.com/ndtvnews-top-stories"),
+    ("India Today", "en", "https://www.indiatoday.in/rss/home"),
+    ("Hindustan Times", "en", "https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml"),
+    ("The Hindu", "en", "https://www.thehindu.com/news/national/feeder/default.rss"),
+]
+PER_SOURCE = 8
+
+
+def _when(txt):
+    from email.utils import parsedate_to_datetime
+    txt = (txt or "").strip()
+    if not txt:
+        return ""
+    try:
+        d = parsedate_to_datetime(txt)
+    except Exception:
+        try:
+            d = datetime.fromisoformat(txt.replace("Z", "+00:00"))
+        except Exception:
+            return ""
+    if d.tzinfo is None:
+        d = d.replace(tzinfo=timezone.utc)
+    return d.astimezone(timezone.utc).isoformat(timespec="seconds")
+
+
+def build_headlines():
+    import html as H
+    now = datetime.now(timezone.utc)
+    items, seen = [], set()
+    for name, lang, url in HEADLINE_SOURCES:
+        try:
+            root = ET.fromstring(get(url))
+        except Exception as ex:
+            print("headlines: %s failed: %s" % (name, ex))
+            continue
+        n = 0
+        for it in root.iter("item"):
+            title = H.unescape(re.sub(r"<[^>]+>", "", it.findtext("title") or "")).strip()
+            link = (it.findtext("link") or "").strip()
+            if not title or not link.startswith("http") or link in seen:
+                continue
+            when = _when(it.findtext("pubDate") or it.findtext("{http://purl.org/dc/elements/1.1/}date"))
+            if when and (now - datetime.fromisoformat(when)).total_seconds() > 2 * 86400:
+                continue  # दो दिन से पुरानी खबर नहीं
+            seen.add(link)
+            items.append({"t": title[:220], "u": link, "s": name, "l": lang, "d": when})
+            n += 1
+            if n >= PER_SOURCE:
+                break
+        print("headlines: %s %d" % (name, n))
+    if len(items) < 5:
+        raise RuntimeError("too few headlines (%d)" % len(items))
+    items.sort(key=lambda x: x["d"] or "0", reverse=True)
+    old = load("data/headlines.json", {})
+    if old.get("items") == items:
+        print("headlines: no change")
+        return
+    save("data/headlines.json", {"updated": now.isoformat(timespec="seconds"), "items": items})
+    print("headlines: %d total" % len(items))
+
+
 if __name__ == "__main__":
     os.makedirs("data", exist_ok=True)
     ok = True
-    for fn in (build_feed, build_videos):
+    for fn in (build_feed, build_videos, build_headlines):
         try:
             fn()
         except Exception as ex:  # एक हिस्सा फेल हो तो दूसरा फिर भी चले
