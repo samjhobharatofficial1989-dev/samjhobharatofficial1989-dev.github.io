@@ -260,3 +260,18 @@ html:not([lang=hi]) .hint-en{display:none}
 .onb-btns{display:flex;gap:10px;margin-top:12px}
 .certbox{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line);text-align:start}.certimg{width:100%;border-radius:10px;margin:10px 0;box-shadow:var(--shadow)}
 .chips.ctabs{flex-wrap:wrap;overflow:visible}
+
+/* काम के औज़ार */
+.toolgrid{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 14px}
+@media(min-width:560px){.toolgrid{grid-template-columns:repeat(3,1fr)}}
+.tool{display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;gap:0 10px;text-align:start;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);cursor:pointer;color:var(--text);font:inherit}
+.tool b{grid-row:1/3;font-size:30px;display:grid;place-items:center}.tool span{font-weight:700;font-size:16.5px}.tool small{color:var(--muted);font-size:13px;line-height:1.3}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 10px;box-shadow:var(--shadow)}
+.scard summary{cursor:pointer;display:flex;flex-direction:column;gap:3px;list-style:none}.scard summary::-webkit-details-marker{display:none}
+.scard summary b{font-size:16px}.scard[open] summary{border-bottom:1px dashed var(--line);padding-bottom:8px;margin-bottom:6px}
+.scard h4{margin:10px 0 2px;font-size:14px;color:var(--saffron)}.scard p,.scard li{font-size:14.5px;line-height:1.45;margin:2px 0}
+.warn{background:#fff4e5;border:1px solid #f5c26b;border-radius:8px;padding:6px 8px;font-size:13.5px}
+.tipline{background:var(--chip);border-radius:8px;padding:7px 9px}
+.yfh{font-size:19px;margin:18px 0 10px}
+.wg{margin:16px 0 8px}.wcard{background:var(--card);border:1px solid var(--line);border-left:4px solid #db2777;border-radius:10px;padding:10px 12px;margin:0 0 9px}
+.wcard p{margin:4px 0 8px;font-size:14.5px;line-height:1.45}.btn-call{background:#b42318}
