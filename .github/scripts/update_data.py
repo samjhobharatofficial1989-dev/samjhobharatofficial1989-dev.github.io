@@ -69,6 +69,54 @@ def build_feed():
     print("feed: %d posts" % len(posts))
 
 
+MAX_NEWS = 12
+NEWS_SUMMARY_LEN = 160
+
+
+def _plain(html_text, limit):
+    """HTML से tag हटाकर सादा पाठ, तय लंबाई तक (शब्द के बीच में न कटे)."""
+    import html as H
+    txt = H.unescape(re.sub(r"<[^>]+>", " ", html_text or ""))
+    txt = re.sub(r"\s+", " ", txt).strip()
+    if len(txt) > limit:
+        cut = txt.rfind(" ", 0, limit - 1)
+        txt = txt[:cut if cut > limit // 2 else limit - 1].rstrip() + "…"
+    return txt
+
+
+def build_news():
+    """हल्की खबर-सूची data/news.json: शीर्षक, तारीख, छोटा सार, Label, लिंक, तस्वीर (पूरा लेख ऐप खोलते समय लाता है)."""
+    d = json.loads(get(BLOG + "/feeds/posts/summary?alt=json&max-results=%d" % MAX_NEWS))
+    items = []
+    for e in d.get("feed", {}).get("entry", []):
+        eid = e.get("id", {}).get("$t", "")
+        pid = re.search(r"post-(\d+)", eid)
+        link = next((l["href"] for l in e.get("link", []) if l.get("rel") == "alternate"), BLOG)
+        html = (e.get("summary") or e.get("content") or {}).get("$t", "")
+        img = big_image((e.get("media$thumbnail") or {}).get("url", ""))
+        if not img:
+            m = re.search(r'<img[^>]+src="([^"]+)"', html, re.I)
+            img = m.group(1) if m else ""
+        items.append({
+            "id": eid,
+            "pid": pid.group(1) if pid else "",
+            "title": e.get("title", {}).get("$t", "—"),
+            "date": _when(e.get("published", {}).get("$t", "")) or e.get("published", {}).get("$t", ""),
+            "summary": _plain(html, NEWS_SUMMARY_LEN),
+            "labels": [c["term"] for c in e.get("category", [])],
+            "url": link,
+            "img": img,
+        })
+    if not items:
+        raise RuntimeError("no posts in summary feed")
+    old = load("data/news.json", [])
+    if old == items:
+        print("news: no change")
+        return
+    save("data/news.json", items)
+    print("news: %d posts" % len(items))
+
+
 def rss_videos():
     xml = None
     for i in range(3):  # YouTube कभी-कभी पहली बार में जवाब नहीं देता
@@ -216,7 +264,7 @@ def build_headlines():
 if __name__ == "__main__":
     os.makedirs("data", exist_ok=True)
     ok = True
-    for fn in (build_feed, build_videos, build_headlines):
+    for fn in (build_feed, build_news, build_videos, build_headlines):
         try:
             fn()
         except Exception as ex:  # एक हिस्सा फेल हो तो दूसरा फिर भी चले
