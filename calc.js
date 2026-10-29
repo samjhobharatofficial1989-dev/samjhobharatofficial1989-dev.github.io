@@ -65,6 +65,7 @@ window.SB_CALC = (function () {
       share.push(T("r_real") + ": " + money(real));
     }
     if (res.note) out += '<p class="small">' + D.esc(res.note) + "</p>";
+    var asOf = (D.cfg.rates || {}).RATES_AS_OF; if (asOf) out += '<p class="small">दरें: ' + D.esc(asOf) + " तक सत्यापित</p>";
     lastShare = share.join("\n");
     show(out + '<button class="btn btn-wa" id="c_share" type="button">📤 ' + D.esc(T("share_btn")) + "</button>");
   }

@@ -292,7 +292,6 @@ window.SB_I18N = (function () {
     document.querySelectorAll("[data-i18n-ph]").forEach(function (el) { el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph"))); });
     var lb = document.getElementById("langBtnText"); if (lb) lb.textContent = L.name;
     document.title = t("brand");
-    document.title = t("brand");
     var lg = document.getElementById("logoLetter"), li = document.getElementById("logoImg");
     if (lg && li) { var useImg = lang === "hi" || lang === "mr"; li.hidden = !useImg; lg.hidden = useImg; lg.textContent = t("logo_letter"); }
   }

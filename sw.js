@@ -1,5 +1,5 @@
 /* समझो भारत — Service Worker: ऑफ़लाइन कॉपी, तस्वीरें सहेजना, नई खबर की सूचना। नया संस्करण डालें तो VERSION बदलें। */
-const VERSION = "sb-v20";
+const VERSION = "sb-v21";
 const DATA = "sb-data";   // feed.json और सूचना की स्थिति (संस्करण बदलने पर भी बनी रहती है)
 const IMG = "sb-img";     // खबरों और वीडियो की तस्वीरें
 const TRC = "sb-tr";      // अनुवादित लेख
@@ -7,13 +7,23 @@ const SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "i18n.js"
   "icons/icon-192.png", "icons/icon-512.png",
   "fonts/mukta-devanagari-400-normal.woff2", "fonts/mukta-devanagari-700-normal.woff2",
   "fonts/mukta-latin-400-normal.woff2", "fonts/mukta-latin-700-normal.woff2"];
+const SHELL_DATA = ["data/news.json"]; // हल्की खबर-सूची भी पहले से सहेजें (न मिले तो install नहीं रुकता)
+const SHELL_PATHS = SHELL.map(p => new URL(p, self.location.href).pathname);
 const KEEP = [VERSION, DATA, IMG, TRC];
 const IMG_HOSTS = /(^|\.)(blogger\.googleusercontent\.com|bp\.blogspot\.com|ytimg\.com|googleusercontent\.com)$/;
 
-self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL))); self.skipWaiting(); });
+self.addEventListener("install", e => {
+  e.waitUntil(Promise.all([
+    caches.open(VERSION).then(c => c.addAll(SHELL)),
+    caches.open(DATA).then(c => Promise.all(SHELL_DATA.map(p => fetch(p).then(r => { if (r.ok) return c.put(new URL(p, self.registration.scope).pathname, r); }).catch(() => {}))))
+  ]));
+  self.skipWaiting();
+});
 self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => KEEP.indexOf(k) < 0).map(k => caches.delete(k)))));
-  self.clients.claim();
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => KEEP.indexOf(k) < 0).map(k => caches.delete(k))))
+    .then(() => self.clients.claim())
+    .then(() => self.clients.matchAll({ type: "window" }))
+    .then(list => list.forEach(c => c.postMessage({ type: "SB_UPDATED", version: VERSION })))); // ऐप को बताना: नया संस्करण आ गया
 });
 
 async function trim(name, max) {
@@ -24,13 +34,22 @@ self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
-  if (url.origin === location.origin) { // ऐप की अपनी फ़ाइलें: पहले इंटरनेट, न मिले तो फ़ोन की कॉपी
-    const isData = url.pathname.indexOf("/data/") >= 0;
+  if (url.origin === location.origin) {
+    if (url.pathname.indexOf("/data/") >= 0) { // data/*.json: फ़ोन की कॉपी तुरंत, पीछे-पीछे नई लाकर सहेजना (stale-while-revalidate)
+      e.respondWith(caches.open(DATA).then(c => c.match(url.pathname).then(hit => {
+        const net = fetch(req).then(r => { if (r.ok) c.put(url.pathname, r.clone()); return r; });
+        if (hit) { e.waitUntil(net.catch(() => {})); return hit; }
+        return net.catch(() => Response.error());
+      })));
+      return;
+    }
+    // ऐप की अपनी फ़ाइलें: पहले इंटरनेट, न मिले तो फ़ोन की कॉपी (सिर्फ़ shell की फ़ाइलें सहेजी जाती हैं)
+    const isShell = SHELL_PATHS.indexOf(url.pathname) >= 0;
     e.respondWith(
       fetch(req).then(r => {
-        if (r.ok) { const copy = r.clone(); caches.open(isData ? DATA : VERSION).then(c => c.put(isData ? url.pathname : req, copy)); }
+        if (r.ok && isShell) { const copy = r.clone(); caches.open(VERSION).then(c => c.put(req, copy)); }
         return r;
-      }).catch(() => caches.match(isData ? url.pathname : req, { ignoreSearch: true }).then(r => r || (isData ? Response.error() : caches.match("index.html"))))
+      }).catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || caches.match("index.html")))
     );
     return;
   }

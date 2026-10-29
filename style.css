@@ -46,11 +46,12 @@ main{max-width:720px;margin:0 auto;padding:12px 16px}
 .thumb.ph{display:grid;place-items:center;background:linear-gradient(135deg,var(--navy),#1d4170);color:#fff;
   border-bottom:4px solid var(--saffron);text-align:center;padding:4px;font-size:13px;font-weight:700;line-height:1.2}
 .card .body{min-width:0;flex:1}
-.card h3{margin:0 0 4px;font-size:16.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card h3,.card .h3{margin:0 0 4px;font-size:16.5px;font-weight:700;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.snip{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0 0 4px;font-size:13.5px;line-height:1.4;color:var(--muted)}
 .card .meta{font-size:13px;color:var(--muted)}
 .card.hero{flex-direction:column}
 .card.hero .thumb{flex:none;width:100%;height:auto;aspect-ratio:16/9}
-.card.hero h3{font-size:19px}
+.card.hero h3,.card.hero .h3{font-size:19px}
 .tag{display:inline-block;background:var(--chip);color:var(--saffron);border-radius:20px;padding:0 8px;font-size:12px;margin-right:6px}
 
 .thumb.auto{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:6px 7px;color:#fff;overflow:hidden;border-bottom:4px solid var(--saffron);text-align:start} .thumb.auto .ai{position:absolute;top:4px;right:6px;font-size:20px;line-height:1} .thumb.auto .at{font-size:11.5px;font-weight:700;line-height:1.25;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden} .card .thumb.at-news{background:linear-gradient(135deg,#0B2545,#1d4170)} .card .thumb.at-money{background:linear-gradient(135deg,#0f5132,#198754)} .card .thumb.at-cyber{background:linear-gradient(135deg,#3b0a45,#7b2cbf)} .card .thumb.at-tech{background:linear-gradient(135deg,#1e3a8a,#0ea5e9)} .card .thumb.at-govt{background:linear-gradient(135deg,#9a3412,#f97316)} .card .thumb.at-poli{background:linear-gradient(135deg,#7f1d1d,#dc2626)} .card .thumb.at-def{background:linear-gradient(135deg,#3f4a1d,#6b7d2a)} .card .thumb.at-hist{background:linear-gradient(135deg,#5b3a1a,#a16207)} .card .thumb.at-info{background:linear-gradient(135deg,#115e59,#14b8a6)} .empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:18px;text-align:center;color:var(--muted)}
@@ -156,7 +157,7 @@ html:not([lang=hi]):not([lang=mr]):not([lang=en]) body{font-family:system-ui,"No
 .btn-cm{background:var(--green);margin:8px 0}
 .btn-ghost{background:none;color:var(--saffron);border:2px solid var(--saffron)}
 /* उर्दू (RTL) में हिंदी/अंग्रेज़ी सामग्री सही दिशा में दिखे */
-[dir=rtl] .card h3,[dir=rtl] .qtext,[dir=rtl] .qopt,[dir=rtl] .qexp,[dir=rtl] .fact,[dir=rtl] .vitem span,[dir=rtl] .now,
+[dir=rtl] .card h3,[dir=rtl] .card .h3,[dir=rtl] .qtext,[dir=rtl] .qopt,[dir=rtl] .qexp,[dir=rtl] .fact,[dir=rtl] .vitem span,[dir=rtl] .now,
 [dir=rtl] .reader-body h1,[dir=rtl] .reader-body p,[dir=rtl] .reader-body li,[dir=rtl] .reader-body h2,[dir=rtl] .reader-body h3,[dir=rtl] .chip{unicode-bidi:plaintext;text-align:start}
 
 .logo-letter{display:grid;place-items:center;background:var(--saffron);color:#fff;font-weight:700;font-size:22px;border-radius:50%;
@@ -318,3 +319,4 @@ html:not([lang=hi]) .hint-en{display:none}
 .hl-t{font-size:15.5px;line-height:1.4;font-weight:600}
 .hl-m{font-size:12.5px;color:var(--muted)}
 .hl-more{margin-top:10px;width:100%}
+.toast{position:fixed;left:12px;right:12px;bottom:72px;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--navy);color:#fff;border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);font-size:14px}

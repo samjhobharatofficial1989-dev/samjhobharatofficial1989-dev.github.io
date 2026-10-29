@@ -94,9 +94,8 @@
   }
   function tick(force) {
     if (!force && Date.now() - last < EVERY) return;
-    load();
-    if (canRefresh() && rb) rb.click(); // वही काम जो ऊपर का ताज़ा करें बटन करता है
-    else last = Date.now();
+    if (canRefresh() && rb) rb.click(); // वही काम जो ऊपर का ताज़ा करें बटन करता है (उसमें load() भी शामिल है)
+    else { load(); last = Date.now(); }
   }
   setInterval(function () { tick(false); }, 60 * 1000);
   document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") tick(false); });

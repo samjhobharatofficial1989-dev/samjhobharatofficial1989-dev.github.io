@@ -22,7 +22,11 @@
   var TABS = ["news", "gyan", "calc", "quiz", "video", "links"];
   var navBtns = document.querySelectorAll(".bottomnav button");
   function showTab(name) {
-    navBtns.forEach(function (b) { b.classList.toggle("active", b.dataset.tab === name); });
+    navBtns.forEach(function (b) {
+      var on = b.dataset.tab === name;
+      b.classList.toggle("active", on);
+      if (on) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+    });
     document.querySelectorAll(".tab").forEach(function (s) { s.classList.toggle("active", s.id === "tab-" + name); });
     if (name === "video") loadVideos();
     if (name === "quiz") Quiz.start();
@@ -141,8 +145,9 @@
         : autoThumb(p, tp);
       var star = isSaved(p) ? '<span class="star" aria-hidden="true">★</span>' : "";
       var rd = window.SBP.isRead(p);
+      var snip = p.summary && tp.state !== "done" ? '<p class="snip">' + esc(p.summary) + "</p>" : "";
       return '<button class="card' + (i === 0 && p.img ? " hero" : "") + (rd ? " isread" : "") + '" data-id="' + esc(p.id) + '">' + img +
-        '<div class="body"><h3>' + star + esc(tp.title) + '</h3><div class="meta">' + labels + fmtDate(p.date) +
+        '<div class="body"><span class="h3" role="heading" aria-level="3">' + star + esc(tp.title) + "</span>" + snip + '<div class="meta">' + labels + fmtDate(p.date) +
         (rd ? ' <span class="rdmark">✓ ' + esc(T("read_mark")) + "</span>" : "") + "</div></div></button>";
     }).join("");
   }
@@ -158,10 +163,13 @@
   }
   /* एक सेक्शन में कई Label हो सकते हैं — हर Label की पोस्ट लाकर जोड़ते हैं */
   function fetchSection(sec) {
-    if (!sec.labels || !sec.labels.length) {
-      return jsonp(feedUrl("", "__CB__")).then(function (d) {
-        if (d.feed && d.feed.category) store.set("sb_labels", d.feed.category.map(function (c) { return c.term; }));
-        return parseFeed(d);
+    if (!sec.labels || !sec.labels.length) { // ताज़ा खबरें: पहले हल्की सूची (data/news.json), न मिले तो सीधे Blogger से
+      return loadNewsJson().then(function (slim) {
+        if (slim && slim.length) return slim;
+        return jsonp(feedUrl("", "__CB__")).then(function (d) {
+          if (d.feed && d.feed.category) store.set("sb_labels", d.feed.category.map(function (c) { return c.term; }));
+          return parseFeed(d);
+        });
       });
     }
     return Promise.all(sec.labels.map(function (l) {
@@ -190,6 +198,31 @@
   function loadFeedJson() {
     return fetch("data/feed.json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (d) { feedJson = d; document.dispatchEvent(new Event("sb:news")); return d; }).catch(function () { return null; });
+  }
+  /* GitHub पर बनने वाली हल्की खबर-सूची (data/news.json): सिर्फ़ शीर्षक, 2 पंक्ति का सार, तारीख, Label, तस्वीर — पूरा लेख खोलने पर आता है */
+  function loadNewsJson() {
+    return fetch("data/news.json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (list) {
+        if (!Array.isArray(list)) return null;
+        return list.filter(function (it) { return it && it.title; }).map(function (it) {
+          return { id: it.id || it.url, pid: it.pid || "", title: it.title, url: it.url || C.blogUrl, date: it.date || "", labels: it.labels || [],
+            comments: null, img: it.img || "", summary: it.summary || "", html: "" };
+        });
+      }).catch(function () { return null; });
+  }
+  /* हल्की सूची में लेख का पूरा HTML नहीं होता — खोलते समय ही लाना: पहले feed.json / सहेजे लेख से, फिर Blogger से */
+  function fillHtml(p) {
+    if (p.html) return Promise.resolve(p.html);
+    var pick = function (list) { return (list || []).filter(function (x) { return x && x.html && (x.id === p.id || (p.pid && x.pid === p.pid)); })[0]; };
+    var hit = pick(feedJson && feedJson.posts) || pick(store.get("sb_saved"));
+    var ready = hit ? Promise.resolve(hit.html) : !p.pid ? Promise.reject(new Error("no pid")) :
+      jsonp(C.blogUrl.replace(/\/$/, "") + "/feeds/posts/default/" + encodeURIComponent(p.pid) + "?alt=json-in-script&callback=__CB__").then(function (d) {
+        var e = d && d.entry, html = e ? ((e.content && e.content.$t) || (e.summary && e.summary.$t) || "") : "";
+        if (!html) throw new Error("empty");
+        if (e.thr$total) p.comments = +e.thr$total.$t;
+        return html;
+      });
+    return ready.then(function (html) { p.html = html; return html; });
   }
 
   var curSec = "news";
@@ -263,7 +296,7 @@
     }).catch(function () {
       if (newsFilter !== filter) return;
       var ql = q.toLowerCase();
-      var found = offlinePool().filter(function (p) { return (p.title + " " + p.html).toLowerCase().indexOf(ql) >= 0; });
+      var found = offlinePool().filter(function (p) { return (p.title + " " + (p.html || p.summary || "")).toLowerCase().indexOf(ql) >= 0; });
       if (found.length) { renderList($("newsList"), found, ""); $("newsStatus").textContent = T("offline"); }
       else $("newsList").innerHTML = '<div class="empty">' + T("load_fail") + '<br><small class="hint-en">Please check your internet connection.</small></div>';
     });
@@ -333,7 +366,7 @@
     return m ? m[1] : "";
   }
   function cleanHtml(html) {
-    var doc = new DOMParser().parseFromString("<div>" + html + "</div>", "text/html");
+    var doc = new DOMParser().parseFromString("<div>" + (html || "") + "</div>", "text/html");
     doc.querySelectorAll("script,style,form,object,embed,link,meta,input,button").forEach(function (n) { n.remove(); });
     doc.querySelectorAll("iframe").forEach(function (f) {
       var src = f.getAttribute("src") || "";
@@ -383,7 +416,8 @@
     if (tp.state === "done") tr = '<p class="small mt">🌐 ' + esc(T("mt_note")) + "</p>";
     else if (needTr) tr = '<p class="small mt">' + esc(T("tr_pending")) + '</p><a class="btn btn-tr" href="' + esc(translateUrl(p.url, lang)) +
       '" target="_blank" rel="noopener">🌐 ' + esc(T("read_lang")) + "</a>";
-    var bodyHtml = tp.state === "done" ? (trHtmlCache[lang + p.pid] || '<div class="skeleton"></div><p class="small">' + esc(T("tr_loading")) + "</p>") : cleanHtml(p.html);
+    var bodyHtml = tp.state === "done" ? (trHtmlCache[lang + p.pid] || '<div class="skeleton"></div><p class="small">' + esc(T("tr_loading")) + "</p>")
+      : p.html ? cleanHtml(p.html) : '<div class="skeleton"></div><div class="skeleton"></div>';
     var cm = p.comments ? T("comment_count", p.comments) : T("no_comments");
     $("readerBody").innerHTML =
       "<h1>" + esc(tp.title) + '</h1><div class="meta small">' + fmtDate(p.date) + "</div>" + tr +
@@ -411,6 +445,12 @@
         if (d && d.h) trHtmlCache[lang + p.pid] = html;
         if (current === p && $("postBody")) $("postBody").innerHTML = html;
       }).catch(function () { if (current === p && $("postBody")) { $("postBody").innerHTML = cleanHtml(p.html); readLang = postLang; } });
+    } else if (!p.html) { // हल्की सूची से खुला लेख: पूरा HTML अब लाना
+      fillHtml(p).then(function (html) {
+        if (current === p && $("postBody")) $("postBody").innerHTML = cleanHtml(html);
+      }).catch(function () {
+        if (current === p && $("postBody")) $("postBody").innerHTML = '<p class="small">' + esc(T("load_fail")) + '</p><a class="btn btn-ghost" href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(T("read_blog")) + "</a>";
+      });
     }
   }
   function readPct() { var r = $("reader"); var h = r.scrollHeight - r.clientHeight; return h > 0 ? r.scrollTop / h : 1; }
@@ -991,7 +1031,22 @@
   window.SBA = { pool: offlinePool, open: function (p) { postsById[p.id] = p; openPost(p); }, tr: trPost, feedReady: loadFeedJson };
   document.dispatchEvent(new Event("sb:ready"));
 
+  /* ---------- छोटा संदेश (toast) ---------- */
+  function toast(msg, btnText, onBtn) {
+    var old = $("sbToast"); if (old) old.remove();
+    var t = document.createElement("div"); t.id = "sbToast"; t.className = "toast"; t.setAttribute("role", "status");
+    t.innerHTML = "<span></span>" + (btnText ? '<button class="btn btn-sm" type="button"></button>' : "");
+    t.firstChild.textContent = msg;
+    if (btnText) { t.lastChild.textContent = btnText; t.lastChild.addEventListener("click", function () { t.remove(); if (onBtn) onBtn(); }); }
+    else setTimeout(function () { t.remove(); }, 4000);
+    document.body.appendChild(t);
+  }
+
   if ("serviceWorker" in navigator) {
+    var hadSW = !!navigator.serviceWorker.controller; // पहले से SW चल रहा हो, तभी "नया संस्करण" बताना (पहली बार नहीं)
+    navigator.serviceWorker.addEventListener("message", function (ev) {
+      if (hadSW && ev.data && ev.data.type === "SB_UPDATED") toast("नया version उपलब्ध है", "Reload", function () { location.reload(); });
+    });
     window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
   }
 })();
