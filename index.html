@@ -23,6 +23,9 @@
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.93 6h-2.95a15.6 15.6 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a8.2 8.2 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4H4.26zm.81 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.07 16zM8.02 8H5.07a7.99 7.99 0 0 1 4.33-3.56A15.6 15.6 0 0 0 8.02 8zM12 19.96A14.1 14.1 0 0 1 10.09 16h3.82A14.1 14.1 0 0 1 12 19.96zM14.34 14H9.66a14.7 14.7 0 0 1 0-4h4.68a14.7 14.7 0 0 1 0 4zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14a16.5 16.5 0 0 0 0-4h3.38a8.2 8.2 0 0 1 0 4h-3.38z"/></svg>
     <span id="langBtnText">English</span>
   </button>
+  <a id="contactBtn" class="icon-btn" href="contact.html" aria-label="Contact Us / संपर्क करें" title="Contact Us">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+  </a>
   <button id="refreshBtn" class="icon-btn" aria-label="ताज़ा करें">
     <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
   </button>
@@ -84,7 +87,15 @@
 
   <!-- जुड़ें -->
   <section id="tab-links" class="tab" aria-label="हमसे जुड़ें">
-    <div class="section-head"><h2 data-i18n="links_head">हमसे जुड़ें</h2></div>
+    <div class="section-head"><h2 data-i18n="links_head">संपर्क करें और जुड़ें</h2></div>
+    <div id="contactBox" class="about contact-box">
+      <h3>✉️ <span data-i18n="contact_head">संपर्क करें</span> <span class="hint-en">(Contact Us)</span></h3>
+      <p><b data-i18n="contact_pub_l">प्रकाशक</b>: <span data-i18n="contact_pub">समझो भारत (स्वतंत्र डिजिटल प्रकाशक, भारत)</span></p>
+      <p><b data-i18n="contact_email_l">ईमेल</b>: <a href="mailto:samjhobharatofficial1989@gmail.com">samjhobharatofficial1989@gmail.com</a></p>
+      <p><b data-i18n="contact_web_l">वेबसाइट</b>: <a href="contact.html">samjhobharatofficial1989-dev.github.io/contact.html</a></p>
+      <p class="small" data-i18n="contact_note">सवाल, सुझाव, किसी लेख में सुधार या शिकायत के लिए हमें ईमेल करें।</p>
+      <a class="btn btn-sm" href="mailto:samjhobharatofficial1989@gmail.com?subject=Samjho%20Bharat%20App" data-i18n="contact_btn">ईमेल भेजें</a>
+    </div>
     <p class="hint-en hint">Follow Samjho Bharat on all platforms.</p>
     <div id="linkList" class="links"></div>
     <button id="shareApp" class="btn btn-wa mt2" type="button" data-i18n="share_app_btn">📲 ऐप दोस्तों को भेजें</button>
@@ -93,8 +104,10 @@
     <div class="about">
       <h3 data-i18n="about_head">समझो भारत के बारे में</h3>
       <p data-i18n="about_text">समझो भारत देश-दुनिया की खबरों और उपयोगी जानकारी को आसान भाषा में आप तक पहुँचाता है।</p>
+      <p class="small" data-i18n="gov_disclaimer">समझो भारत एक स्वतंत्र ऐप है। यह किसी सरकारी या राजनीतिक संस्था से जुड़ा नहीं है। योजनाओं की जानकारी आधिकारिक सरकारी वेबसाइटों (जैसे india.gov.in, myscheme.gov.in) से ली गई है; आवेदन से पहले वहीं जाँचें।</p>
+      <p><a href="contact.html"><span data-i18n="contact_head">संपर्क करें</span><span class="hint-en"> (Contact Us)</span></a></p>
       <p><a href="privacy.html"><span data-i18n="privacy">गोपनीयता नीति</span><span class="hint-en"> (Privacy Policy)</span></a></p>
-      <p class="small"><span data-i18n="version">संस्करण</span> 2.3</p>
+      <p class="small"><span data-i18n="version">संस्करण</span> 2.4</p>
     </div>
   </section>
 </main>
@@ -121,7 +134,7 @@
   <button data-tab="calc"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm1 7v2h2v-2H8zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H8zm4 0v2h2v-2h-2zm4 0v5h2v-5h-2zm-8 4v1h6v-1H8z"/></svg><span data-i18n="nav_calc">हिसाब</span></button>
   <button data-tab="quiz"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 17h-2v-2h2v2zm2.07-7.75-.9.92A3.4 3.4 0 0 0 13 15h-2v-.5a4 4 0 0 1 1.17-2.83l1.24-1.26A1.96 1.96 0 0 0 14 9a2 2 0 0 0-4 0H8a4 4 0 0 1 8 0 3.2 3.2 0 0 1-.93 2.25z"/></svg><span data-i18n="nav_quiz">क्विज़</span></button>
   <button data-tab="video"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M21 6.5a2.5 2.5 0 0 0-1.76-1.77C17.68 4.3 12 4.3 12 4.3s-5.68 0-7.24.43A2.5 2.5 0 0 0 3 6.5 26 26 0 0 0 2.6 12 26 26 0 0 0 3 17.5a2.5 2.5 0 0 0 1.76 1.77c1.56.43 7.24.43 7.24.43s5.68 0 7.24-.43A2.5 2.5 0 0 0 21 17.5a26 26 0 0 0 .4-5.5 26 26 0 0 0-.4-5.5zM10 15.2V8.8l5.2 3.2-5.2 3.2z"/></svg><span data-i18n="nav_video">वीडियो</span></button>
-  <button data-tab="links"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05A4.22 4.22 0 0 1 17 16.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span data-i18n="nav_links">जुड़ें</span></button>
+  <button data-tab="links"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05A4.22 4.22 0 0 1 17 16.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span data-i18n="nav_links">संपर्क</span></button>
 </nav>
 
 <!-- भाषा चुनने की सूची -->
@@ -133,7 +146,8 @@
   </div>
 </div>
 
-<footer class="slogan" data-i18n="slogan">देश को समझिए, समझो भारत के साथ।</footer>
+<footer class="slogan"><span data-i18n="slogan">देश को समझिए, समझो भारत के साथ।</span>
+  <span class="footlinks"><a href="contact.html" data-i18n="contact_head">संपर्क करें</a> · <a href="privacy.html" data-i18n="privacy">गोपनीयता नीति</a></span></footer>
 
 <script src="config.js"></script>
 <script src="i18n.js"></script>

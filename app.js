@@ -420,7 +420,9 @@
       : p.html ? cleanHtml(p.html) : '<div class="skeleton"></div><div class="skeleton"></div>';
     var cm = p.comments ? T("comment_count", p.comments) : T("no_comments");
     $("readerBody").innerHTML =
-      "<h1>" + esc(tp.title) + '</h1><div class="meta small">' + fmtDate(p.date) + "</div>" + tr +
+      "<h1>" + esc(tp.title) + '</h1>' +
+      '<div class="src-line small"><b>' + esc(T("src_publisher")) + ":</b> " + esc(T("src_team")) + " · <b>" + esc(T("src_published")) + ":</b> " + fmtDate(p.date) +
+      '<br><b>' + esc(T("src_original")) + ':</b> <a href="' + esc(p.url) + '" target="_blank" rel="noopener">samjhobharatofficial.blogspot.com</a> · <a href="contact.html">' + esc(T("contact_head")) + "</a></div>" + tr +
       '<div class="rtools"><button class="btn btn-sm btn-listen" type="button" id="listenBtn">' + esc(T("listen")) + "</button>" +
       '<button class="btn btn-sm btn-ghost2" type="button" id="saveBtn2"></button></div>' +
       '<div id="postBody">' + bodyHtml + "</div>" +

@@ -320,3 +320,10 @@ html:not([lang=hi]) .hint-en{display:none}
 .hl-m{font-size:12.5px;color:var(--muted)}
 .hl-more{margin-top:10px;width:100%}
 .toast{position:fixed;left:12px;right:12px;bottom:72px;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--navy);color:#fff;border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);font-size:14px}
+/* v2.4: संपर्क (Contact Us) और स्रोत की लाइन */
+.contact-box{margin-top:6px;border-color:var(--saffron)}
+.contact-box a{word-break:break-all}
+.footlinks{display:block;margin-top:6px;font-size:13px}
+.footlinks a{color:inherit}
+.src-line{margin:4px 0 10px;padding:8px 10px;border-inline-start:3px solid var(--saffron);background:var(--card);border-radius:8px}
+.src-line a{color:inherit;word-break:break-all}

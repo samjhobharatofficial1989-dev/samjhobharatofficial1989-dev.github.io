@@ -1,9 +1,9 @@
 /* समझो भारत — Service Worker: ऑफ़लाइन कॉपी, तस्वीरें सहेजना, नई खबर की सूचना। नया संस्करण डालें तो VERSION बदलें। */
-const VERSION = "sb-v21";
+const VERSION = "sb-v22";
 const DATA = "sb-data";   // feed.json और सूचना की स्थिति (संस्करण बदलने पर भी बनी रहती है)
 const IMG = "sb-img";     // खबरों और वीडियो की तस्वीरें
 const TRC = "sb-tr";      // अनुवादित लेख
-const SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "i18n.js", "i18n-extra.js", "i18n-p5.js", "quiz.js", "calc2.js", "calc.js", "personal.js", "tools.js", "phase4.js", "postcard.js", "headlines.js", "quiz2.js", "manifest.json", "privacy.html",
+const SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "i18n.js", "i18n-extra.js", "i18n-p5.js", "quiz.js", "calc2.js", "calc.js", "personal.js", "tools.js", "phase4.js", "postcard.js", "headlines.js", "quiz2.js", "manifest.json", "privacy.html", "contact.html",
   "icons/icon-192.png", "icons/icon-512.png",
   "fonts/mukta-devanagari-400-normal.woff2", "fonts/mukta-devanagari-700-normal.woff2",
   "fonts/mukta-latin-400-normal.woff2", "fonts/mukta-latin-700-normal.woff2"];
