@@ -121,12 +121,12 @@
         d.items.map(function (x) {
           return '<details class="scard sc-item" id="sc-' + esc(x.id) + '"><summary><b>' + esc(x.icon + " " + x.title) + '</b><span class="small">' + esc(x.flag) + "</span></summary>" +
             "<h4>" + esc(T("sc_how")) + "</h4><p>" + esc(x.how) + "</p><h4>" + esc(T("sc_flag")) + "</h4><p>" + esc(x.flag) + "</p>" +
-            '<p class="tipline">👉 <b>' + esc(T("sc_do")) + ":</b> " + esc(x.do) + '</p><p class="small">' + esc(T("sc_src")) + ": " + esc(x.src) + "</p></details>";
+            '<p class="tipline">👉 <b>' + esc(T("sc_do")) + ":</b> " + esc(x.do) + '</p><p class="small">' + esc(T("sc_src")) + ": " + esc(x.src) + "</p>" + (x.url ? '<a class="btn btn-sm btn-ghost2" href="' + esc(x.url) + '" target="_blank" rel="noopener">🔗 ' + esc(T("yf_site")) + "</a>" : "") + "</details>";
         }).join("") +
         '<p class="small">📉 ' + esc(d.stat) + "</p>" +
         '<h3 class="wg">🔗 ' + esc(T("sc_links")) + "</h3>" + d.links.map(function (l) {
           return '<a class="btn btn-sm btn-ghost2 lnk" href="' + esc(l.u) + '" target="_blank" rel="noopener">' + esc(l.t) + "</a>";
-        }).join(" ") + '<p class="small">' + esc(T("data_checked", d.verified_on)) + "</p>";
+        }).join(" ") + '<p class="small">' + esc(T("data_checked", d.verified_on)) + '</p><p class="small">' + esc(T("gov_disclaimer")) + "</p>";
       $("toolBody").innerHTML = html;
       $("scShare").onclick = function () { share(T("sc_share_head") + "\n" + d.rules.map(function (r) { return "✅ " + r; }).join("\n") + "\n\n🆘 1930 | cybercrime.gov.in"); };
       var care = d.items[dayNo() % d.items.length], el = $("sc-" + care.id); if (el) el.open = true; // आज की सावधानी खुली रहे
@@ -187,7 +187,7 @@
         '<div id="dtList"></div><h3 class="wg">📌 ' + esc(T("dt_own")) + '</h3><p class="small">' + esc(T("dt_own_note")) + "</p>" +
         '<form id="dtForm" class="dt-form"><input id="dtT" maxlength="80" required placeholder="' + esc(T("dt_own_t")) + '"><input id="dtD" type="date" required min="' + TODAY + '" aria-label="' + esc(T("dt_own_d")) + '">' +
         '<button class="btn btn-sm" type="submit">➕ ' + esc(T("dt_add")) + '</button></form><div id="dtOwn"></div>' +
-        '<p class="small">' + esc(d.note) + "</p>" + '<p class="small">' + esc(T("data_checked", d.verified_on)) + "</p>";
+        '<p class="small">' + esc(d.note) + "</p>" + '<p class="small">' + esc(T("data_checked", d.verified_on)) + '</p><p class="small">' + esc(T("gov_disclaimer")) + "</p>";
       renderDates();
       $("dtForm").addEventListener("submit", function (ev) {
         ev.preventDefault();
@@ -262,7 +262,7 @@
           '<p class="tipline">💡 ' + esc(x.tip) + "</p>" + '<p class="small">' + esc(T("sc_src")) + ": " + esc(x.src) + "</p>" +
           (x.phone ? '<a class="btn btn-sm btn-call" href="tel:' + esc(x.phone) + '">📞 ' + esc(x.phone) + "</a> " : "") +
           (x.url ? '<a class="btn btn-sm btn-ghost2" href="' + esc(x.url) + '" target="_blank" rel="noopener">🔗 ' + esc(T("yf_site")) + "</a>" : "") + "</details>";
-      }).join("") + '<p class="small">' + esc(T("data_checked", d.verified_on)) + "</p>";
+      }).join("") + '<p class="small">' + esc(T("data_checked", d.verified_on)) + '</p><p class="small">' + esc(T("gov_disclaimer")) + "</p>";
       $("toolBody").querySelectorAll("details[data-gid]").forEach(function (el) {
         el.addEventListener("toggle", function () { if (el.open) ls.set("sb_guide_last", el.dataset.gid); });
       });

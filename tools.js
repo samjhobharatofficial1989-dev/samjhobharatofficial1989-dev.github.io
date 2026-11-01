@@ -173,7 +173,7 @@
           "<h4>" + esc(T("docs_fee")) + "</h4><p>" + esc(x.fee) + "</p>" +
           '<p class="tipline">💡 ' + esc(x.tip) + "</p>" +
           '<a class="btn btn-sm" href="' + esc(x.url) + '" target="_blank" rel="noopener">🔗 ' + esc(T("yf_site")) + "</a></details>";
-      }).join("") + '<p class="small">' + esc(T("data_checked", d.verified_on)) + "</p>";
+      }).join("") + '<p class="small">' + esc(T("data_checked", d.verified_on)) + '</p><p class="small">' + esc(T("gov_disclaimer")) + "</p>";
     }).catch(function () { $("toolBody").innerHTML = failHtml(); });
   }
 
@@ -184,12 +184,12 @@
       var html = '<p class="small">' + esc(T("women_intro")) + "</p>";
       Object.keys(d.groups).forEach(function (g) {
         html += '<h3 class="wg">' + esc(d.groups[g]) + "</h3>" + d.items.filter(function (x) { return x.group === g; }).map(function (x) {
-          return '<div class="wcard"><b>' + esc(x.title) + "</b><p>" + esc(x.text) + "</p>" +
+          return '<div class="wcard"><b>' + esc(x.title) + "</b><p>" + esc(x.text) + "</p>" + (x.src ? '<p class="small">' + esc(T("sc_src")) + ": " + esc(x.src) + "</p>" : "") +
             (x.phone ? '<a class="btn btn-sm btn-call" href="tel:' + esc(x.phone) + '">📞 ' + esc(x.phone) + "</a> " : "") +
             (x.url ? '<a class="btn btn-sm btn-ghost2" href="' + esc(x.url) + '" target="_blank" rel="noopener">🔗 ' + esc(T("yf_site")) + "</a>" : "") + "</div>";
         }).join("");
       });
-      $("toolBody").innerHTML = html + '<p class="small">' + esc(T("data_checked", d.verified_on)) + "</p>";
+      $("toolBody").innerHTML = html + '<p class="small">' + esc(T("data_checked", d.verified_on)) + '</p><p class="small">' + esc(T("gov_disclaimer")) + "</p>";
     }).catch(function () { $("toolBody").innerHTML = failHtml(); });
   }
 
